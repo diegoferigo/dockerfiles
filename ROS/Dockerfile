@@ -23,8 +23,13 @@ RUN apt-get update && apt-get install -y \
     apt-get autoclean &&\
     apt-get autoremove
 
-# Setup the environment
-RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM 1
+
+# Setup an additional entrypoint script
+# For the time being it only creates a new runtime user
+COPY entrypoint.sh /usr/sbin/entrypoint.sh
+RUN chmod 755 /usr/sbin/entrypoint.sh
+ENTRYPOINT ["/usr/sbin/entrypoint.sh"]
+#ENTRYPOINT ["/ros_entrypoint.sh", "bash /usr/sbin/entrypoint.sh"]
+CMD ["bash"]
