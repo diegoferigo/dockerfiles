@@ -39,7 +39,7 @@ open a new tty or use `exit` on the current shell getting back to the root user.
 
 ## X11 authentication
 
-As an example, `rqt is forwarded from within the container to the host Xserver:
+As an example, `rqt` is forwarded from within the container to the host Xserver:
 ```
 XSOCK=/tmp/.X11-unix
 XAUTH=/tmp/.docker.xauth

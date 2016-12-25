@@ -31,5 +31,4 @@ ENV QT_X11_NO_MITSHM 1
 COPY entrypoint.sh /usr/sbin/entrypoint.sh
 RUN chmod 755 /usr/sbin/entrypoint.sh
 ENTRYPOINT ["/usr/sbin/entrypoint.sh"]
-#ENTRYPOINT ["/ros_entrypoint.sh", "bash /usr/sbin/entrypoint.sh"]
 CMD ["bash"]
