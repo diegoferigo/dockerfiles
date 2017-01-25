@@ -1,20 +1,52 @@
-Dockerfile for YARP, built on top of latest ubuntu xenial image
+Dockerfile for YARP and iCub, built on top of latest ubuntu xenial image.
 
-# Build the image
-```
-# docker build diego/yarp .
-```
+Features:
+* X11 authentication for GUIs
+* Image size: 2.45GB
 
-# Run the container w/ yarp
+## Build the image
 ```
-# docker run -p 10000:10000 -i -t --rm --name "yarp" diego/yarp bash
-```
-Open as many ttys as you need
-```
-# docker exec -it yarp bash
+ docker build -t diego/yarp .
 ```
 
-# X11 host access
+## Run the container w/ yarp
 ```
-# docker run -p 10000:10000 -i -t --rm --privileged -e "DISPLAY" --security-opt="label:disable" -v /tmp/.X11-unix:/tmp/.X11-unix:rw --name "yarp" diego/yarp bash
+docker run -i -t --rm \
+	-p 10000:10000 \
+	--name yarp \
+	diego/yarp \
+	bash
 ```
+Then, open as many ttys as needed with
+```
+docker exec -it yarp bash
+```
+
+## X11 host access
+```
+XSOCK=/tmp/.X11-unix
+XAUTH=/tmp/.docker.xauth
+
+touch $XAUTH
+xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+
+docker run -i -t --rm \
+	-p 10000:10000 \
+	-v $XSOCK:$XSOCK:rw \
+	-v $XAUTH:$XAUTH:rw \
+	-e XAUTHORITY=${XAUTH} \
+	-e "DISPLAY" \
+	--name yarp \
+	diego/yarp \
+	iCubGui
+```
+
+## TODO
+* YARP dynamically opens ports. Check how to handle its behavior
+* Runtime user creation
+* HW Acceleration
+
+## Resources
+* [ROS dockerfile README][1]
+
+[1]: https://github.com/diegoferigo/dockerfiles/tree/master/ROS
