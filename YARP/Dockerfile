@@ -31,6 +31,12 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1
         libgazebo7-dev &&\
     rm -rf /var/lib/apt/lists/*
 
+# Setup HW Acceleration for Intel graphic cards
+RUN apt-get update && apt-get install -y \
+        libgl1-mesa-glx \
+        libgl1-mesa-dri &&\
+    rm -rf /var/lib/apt/lists/*
+
 # Additional tools
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \

@@ -41,10 +41,11 @@ docker run -i -t --rm \
 	diego/yarp \
 	iCubGui
 ```
+If you need HW acceleration (only for Intel graphic cards), add also this device
+flag `--device=/dev/dri`.
 
 ## TODO
 * YARP dynamically opens ports. Check how to handle its behavior
-* HW Acceleration
 
 ## Resources
 * [ROS dockerfile README][1]

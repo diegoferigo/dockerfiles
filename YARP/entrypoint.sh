@@ -29,5 +29,8 @@ create_user() {
 # Create the user
 create_user
 
+# Add the user to video group for HW acceleration (only Intel cards supported)
+usermod -aG video ${USERNAME}
+
 # If a CMD is passed, execute it
 exec "$@"
