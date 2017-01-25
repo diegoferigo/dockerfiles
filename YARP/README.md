@@ -10,9 +10,19 @@ Features:
  docker build -t diego/yarp .
 ```
 
-## Run the container w/ yarp
+## User configuration
+This docker image allows the creation of a runtime user,
+whose default UID and GID is 1000.
+To override these values and to start the container, execute:
 ```
+USER_UID=1000
+USER_GID=1000
+USERNAME=foo
+
 docker run -i -t --rm \
+	-e USER_UID=$USER_UID \
+	-e USER_GID=$USER_GID \
+	-e USERNAME=$USERNAME \
 	-p 10000:10000 \
 	--name yarp \
 	diego/yarp \
