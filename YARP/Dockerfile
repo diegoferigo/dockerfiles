@@ -36,3 +36,10 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         cmake-curses-gui &&\
     rm -rf /var/lib/apt/lists/*
+
+# Setup an additional entrypoint script
+# For the time being it only creates a new runtime user
+COPY entrypoint.sh /usr/sbin/entrypoint.sh
+RUN chmod 755 /usr/sbin/entrypoint.sh
+ENTRYPOINT ["/usr/sbin/entrypoint.sh"]
+CMD ["bash"]

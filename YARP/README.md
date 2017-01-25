@@ -3,6 +3,7 @@ Dockerfile for YARP and iCub, built on top of latest ubuntu xenial image.
 Features:
 * X11 authentication for GUIs
 * Image size: 2.45GB
+* User created during runtime
 
 ## Build the image
 ```
@@ -43,7 +44,6 @@ docker run -i -t --rm \
 
 ## TODO
 * YARP dynamically opens ports. Check how to handle its behavior
-* Runtime user creation
 * HW Acceleration
 
 ## Resources
