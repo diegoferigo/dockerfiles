@@ -29,5 +29,8 @@ create_user() {
 # Create the user
 create_user
 
+# Add the user to video group for HW acceleration (only Intel cards supported)
+usermod -aG video ${USERNAME}
+
 # Load the default ROS entrypoint
 source /ros_entrypoint.sh

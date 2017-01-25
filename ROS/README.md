@@ -2,7 +2,7 @@ Dockerfile for ROS Kinetic `desktop-full`, built on top of the ros:kinetic offic
 
 Features:
 * X11 authentication for GUIs
-* Image size: 3.66GB
+* Image size: 3.47GB
 * User created during runtime
 
 ## Build the image
@@ -56,14 +56,16 @@ docker run -i -t --rm \
 	diego/ros-desktop-full \
 	rqt
 ```
+If you need HW acceleration (only for Intel graphic cards), add also this device
+flag `--device=/dev/dri`.
 
 ## Resources
 * [Docker and ROS][0]
 * X11 Authentication: [stackoverflow][1], [ROS Wiki][2]
 * Runtime user: [docker-browser-box][6]
+* [Hardware Acceleration][3]
 
 ## TODO
-* [Hardware Acceleration][3]
 * Setup a ROS [docker-compose][4] system (see also [docker hub][5] - Compose)
 * Setup sudo w/o password
 

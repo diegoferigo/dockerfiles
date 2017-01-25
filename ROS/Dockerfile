@@ -8,6 +8,12 @@ RUN apt-get update && apt-get install -y \
         ros-kinetic-map-server &&\
     rm -rf /var/lib/apt/lists/*
 
+# Setup HW Acceleration for Intel graphic cards
+RUN apt-get update && apt-get install -y \
+        libgl1-mesa-glx \
+        libgl1-mesa-dri &&\
+    rm -rf /var/lib/apt/lists/*
+
 # Other useful packages
 RUN apt-get update && apt-get install -y \
         nano \
