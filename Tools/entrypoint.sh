@@ -30,7 +30,7 @@ create_user() {
 create_user
 
 # Move Atom packages to the user's home
-# This command should work even in ~/.atom is mounted as volume from the host,
+# This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
 echo "Setting up Atom packages into $USERNAME's home ..."
 mv /root/.atom /home/$USERNAME/.atom_packages_from_root

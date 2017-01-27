@@ -101,7 +101,7 @@ docker run -i -t --rm \
 	diego/tools \
 	su -c "atom -f" $USERNAME
 ```
-In order to run application as user and not root, remember to launch it with
+In order to run applications as user and not root, remember to launch them with
 `su -c "command_to_execute" $USERNAME`.
 
 ### TODO
