@@ -11,8 +11,8 @@ The Atom and GitKraken user's configuration could be made persistent by mounting
 respectively `~/.atom` and `~/.gitkraken` as volumes.<br>
 Note that the folder containing the atom packages will be populated with symlinks
 pointing to the packages shipped with this image. If you use Atom also in your
-host system, to keep the setups separated you can consider mounting a different
-folder instead of `~/.atom`.
+host system, in order to keep the setups separated you can consider mounting a
+different folder instead of `~/.atom`.
 
 ### Image Features:
 * Image size: 1.8GB
@@ -24,7 +24,7 @@ In order to fully exploit the Atom packages shipped with this image, it should
 contain all the toolchain and libraries to build your project. For this reason,
 this image could be useful as starting point to build a reproducible development
 setup. Code testing could be performed with a much simpler container (or
-docker-compose system).
+`docker-compose` system).
 
 ### Atom Features:
 * [RTags][2] enabled by default ([package][2], [usage][3] - only cmake supported).
@@ -33,9 +33,9 @@ Atom could auto spawn it (check the package preferences).
 * [autocomplete-clang][17]
 * Many more atom plugins (check Dockerfile)
 
-`RTags` work flawlessly with `cmake`, just add the `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`
+`RTags` work flawlessly with CMake, just add the `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`
 flag, it will generate the `compile_commands.json` configuration file ([reference][8]).
-RTags needs the execution of `rc -J` after CMake.
+RTags needs the execution of `rc -J` after `cmake`.
 
 `linter-clang` and `clang-complete` need the `.clang_complete` file. Its generation
 could be automated through [CMake][10].
