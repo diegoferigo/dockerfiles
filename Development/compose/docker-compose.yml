@@ -32,13 +32,15 @@ services:
       - "USERNAME=${USERNAME}"
       - "XAUTHORITY=${XAUTH}"
       - "COPY_ATOM_CONF=1"
+      - "PROJECT_DIR=${PROJECT_DIR}"
       - "DISPLAY"
     depends_on:
       - ros-master
     volumes:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
-      - "$ATOM_CONF:/home/conf/.atom:rw"
+      - "${ATOM_CONF}:/home/conf/.atom:rw"
+      - "${PROJECT_DIR}:/home/conf/project"
     command: su -c "atom -f" ${USERNAME}
 
   gitkraken:
@@ -49,9 +51,11 @@ services:
       - "USER_GID=${USER_GID}"
       - "USERNAME=${USERNAME}"
       - "XAUTHORITY=${XAUTH}"
+      - "PROJECT_DIR=${PROJECT_DIR}"
       - "DISPLAY"
     volumes:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
       - "${GITKRAKEN_CONF}:/home/conf/.gitkraken:rw"
+      - "${PROJECT_DIR}:/home/conf/project"
     command: su -c "gitkraken" ${USERNAME}

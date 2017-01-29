@@ -50,6 +50,12 @@ if [ -d "/home/conf/.atom" ] ; then
 	su -c "ln -s /home/conf/.atom /home/$USERNAME/.atom" $USERNAME
 fi
 
+# Same issue as above when mounting a working directory
+if [ -d "/home/conf/project" ] ; then
+	chown -R $USERNAME:$USERNAME /home/conf/project
+	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)"
+fi
+
 # Move Atom packages to the user's home
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
