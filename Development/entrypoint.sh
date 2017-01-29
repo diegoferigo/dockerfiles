@@ -61,8 +61,10 @@ if [ ${COPY_ATOM_CONF} -eq 1 ] ; then
 	declare -a ATOM_PACKAGES
 	ATOM_PACKAGES=($(find /home/$USERNAME/.atom_packages_from_root/packages -mindepth 1 -maxdepth 1 -type d))
 	for package in ${ATOM_PACKAGES[@]} ; do
-		cd $package
-		su -c "apm link" $USERNAME >/dev/null
+		if [ ! -e /home/$USERNAME/.atom/packages/$(basename $package) ] ; then
+			cd $package
+			su -c "apm link" $USERNAME
+		fi
 	done
 	cd
 	echo "Done ..."
