@@ -23,6 +23,7 @@ RUN apt-get update && \
         software-properties-common \
         wget \
         nano \
+        dbus-x11 \
         tree \
         libgnome-keyring0 &&\
     rm -rf /var/lib/apt/lists/*
@@ -43,21 +44,21 @@ RUN add-apt-repository -y ppa:webupd8team/atom &&\
         atom &&\
     rm -rf /var/lib/apt/lists/*
 
-# Install additional development tools
+# Install additional build and development tools
 RUN apt-get update &&\
     apt-get install -y \
-      build-essential \
-      git \
-      cmake \
-      llvm \
-      clang \
-      libclang-dev \
-      gdb \
-      valgrind &&\
+        build-essential \
+        git \
+        cmake \
+        llvm \
+        clang \
+        libclang-dev \
+        gdb \
+        valgrind &&\
     rm -rf /var/lib/apt/lists/*
 
 # Packages with no ppa
-ARG GITKRAKEN_VER=2.0.1
+ARG GITKRAKEN_VER=2.1.0
 RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /v${GITKRAKEN_VER}.deb &&\
     rm /v${GITKRAKEN_VER}.deb
@@ -72,28 +73,8 @@ RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
     rm -r /rtags
 
 # Atom packages
-RUN apm install \
-        build \
-        build-make \
-        build-cmake \
-        busy \
-        linter \
-        linter-clang \
-        autocomplete-clang \
-        autocomplete-cmake \
-        autocomplete-xml \
-        atomic-rtags \
-        highlight-selected \
-        xml-formatter \
-        atom-ros \
-        atom-gdb \
-        minimap \
-        minimap-cursorline \
-        minimap-linter \
-        minimap-highlight-selected \
-        minimap-codeglance \
-        language-cmake \
-        language-docker
+COPY atom_packages.txt /usr/local/etc
+RUN apm install --packages-file /usr/local/etc/atom_packages.txt
 
 # Install libraries
 RUN apt-get update &&\

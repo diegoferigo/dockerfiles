@@ -7,14 +7,16 @@ ARG GITKRAKEN_VER=2.0.1
 # The update is done only here and then cached
 RUN apt-get update
 
-# Build tools
+# Build and development tools
 RUN apt-get install -y \
         build-essential \
         git \
         cmake \
         llvm \
         clang \
-        libclang-dev
+        libclang-dev \
+        gdb \
+        valgrind
 
 # Libraries
 
@@ -23,8 +25,8 @@ RUN apt-get install -y \
         software-properties-common \
         wget \
         nano \
-        curl \
         dbus-x11 \
+        tree \
         libgnome-keyring0 &&\
     rm -rf /var/lib/apt/lists/*
 

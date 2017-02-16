@@ -31,7 +31,7 @@ services:
       - "USER_GID=${USER_GID}"
       - "USERNAME=${USERNAME}"
       - "XAUTHORITY=${XAUTH}"
-      - "COPY_ATOM_CONF=1"
+      - "COPY_ATOM_PACKAGES=1"
       - "PROJECT_DIR=${PROJECT_DIR}"
       - "DISPLAY"
     depends_on:
