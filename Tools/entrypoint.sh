@@ -29,20 +29,50 @@ create_user() {
 # Create the user
 create_user
 
+# There is a weird issue when mounting the ~/.atom and ~/.gitkraken folders.
+# The user is created during runtime by this script. The folders are mounted by
+# `docker run` supposedly before the execution of this script. However, I get a
+# strange error:
+# > install: invalid user diego
+# when trying to mount the directories. If mounting destination is not in
+# /home/$USERNAME, all works flawless.It seems that "-e $USERNAME" and
+# "-v $HOME/.atom:/home/${USERNAME}/.atom" are in conflict for some reason.
+# For the time being, a possible workaround is using symlinks.
+# TODO: fix configuration folders mounting issues
+if [ -d "/home/conf/.gitkraken" ] ; then
+	chown -R $USERNAME:$USERNAME /home/conf/.gitkraken
+	su -c "ln -s /home/conf/.gitkraken /home/$USERNAME/.gitkraken" $USERNAME
+fi
+if [ -d "/home/conf/.atom" ] ; then
+	chown -R $USERNAME:$USERNAME /home/conf/.atom
+	su -c "ln -s /home/conf/.atom/ /home/$USERNAME/.atom" $USERNAME
+fi
+
+# Same issue as above when mounting a working directory
+if [ -d "/home/conf/project" ] ; then
+	chown -R $USERNAME:$USERNAME /home/conf/project
+	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
+fi
+
 # Move Atom packages to the user's home
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
-echo "Setting up Atom packages into $USERNAME's home ..."
-mv /root/.atom /home/$USERNAME/.atom_packages_from_root
-chown -R $USERNAME:$USERNAME /home/$USERNAME/.atom_packages_from_root
-declare -a ATOM_PACKAGES
-ATOM_PACKAGES=($(find /home/$USERNAME/.atom_packages_from_root/packages -mindepth 1 -maxdepth 1 -type d))
-for package in ${ATOM_PACKAGES[@]} ; do
-	cd $package
-	su -c "apm link" $USERNAME >/dev/null
-done
-cd
-echo "Done ..."
+COPY_ATOM_PACKAGES=${COPY_ATOM_PACKAGES:-0}
+if [ ${COPY_ATOM_PACKAGES} -eq 1 ] ; then
+	echo "Setting up Atom packages into $USERNAME's home ..."
+	mv /root/.atom /home/$USERNAME/.atom_packages_from_root
+	chown -R $USERNAME:$USERNAME /home/$USERNAME/.atom_packages_from_root
+	declare -a ATOM_PACKAGES
+	ATOM_PACKAGES=($(find /home/$USERNAME/.atom_packages_from_root/packages -mindepth 1 -maxdepth 1 -type d))
+	for package in ${ATOM_PACKAGES[@]} ; do
+		if [ ! -e /home/$USERNAME/.atom/packages/$(basename $package) ] ; then
+			cd $package
+			su -c "apm link" $USERNAME
+		fi
+	done
+	cd /
+	echo "Done ..."
+fi
 
 # If a CMD is passed, execute it
 exec "$@"

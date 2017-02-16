@@ -96,13 +96,36 @@ docker run -i -t --rm \
 	-v $XAUTH:$XAUTH:rw \
 	-e XAUTHORITY=$XAUTH \
 	-e "DISPLAY" \
-	-e USERNAME=$USERNAME
+	-e USERNAME=$USERNAME \
 	--name tools \
 	diego/tools \
 	su -c "atom -f" $USERNAME
 ```
 In order to run applications as user and not root, remember to launch them with
 `su -c "command_to_execute" $USERNAME`.
+
+## Full example to launch a persistent Atom session
+```
+XSOCK=/tmp/.X11-unix
+XAUTH=/tmp/.docker.xauth
+
+touch $XAUTH
+xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+
+USERNAME=$(whoami)
+
+docker run -i -t --rm \
+	-v $XSOCK:$XSOCK:rw \
+	-v $XAUTH:$XAUTH:rw \
+	-e XAUTHORITY=$XAUTH \
+	-e "DISPLAY" \
+	-e USERNAME=$USERNAME \
+	-e COPY_ATOM_PACKAGES=1 \
+	-v /home/diego/.atom_docker:/home/conf/.atom \
+	--name tools \
+	diego/tools \
+	su -c "atom -f" $USERNAME
+```
 
 ### TODO
 * Explore systemd integration within container ([1][1], [2][5], [3][6], [4][7])

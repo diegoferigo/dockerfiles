@@ -23,6 +23,8 @@ RUN apt-get install -y \
         software-properties-common \
         wget \
         nano \
+        curl \
+        dbus-x11 \
         libgnome-keyring0 &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -50,28 +52,8 @@ RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
     rm -r /rtags
 
 # Atom packages
-RUN apm install \
-        build \
-        build-make \
-        build-cmake \
-        busy \
-        linter \
-        linter-clang \
-        autocomplete-clang \
-        autocomplete-cmake \
-        autocomplete-xml \
-        atomic-rtags \
-        highlight-selected \
-        xml-formatter \
-        atom-ros \
-        atom-gdb \
-        minimap \
-        minimap-cursorline \
-        minimap-linter \
-        minimap-highlight-selected \
-        minimap-codeglance \
-        language-cmake \
-        language-docker
+COPY atom_packages.txt /usr/local/etc
+RUN apm install --packages-file /usr/local/etc/atom_packages.txt
 
 # Setup an additional entrypoint script
 COPY entrypoint.sh /usr/sbin/entrypoint.sh
