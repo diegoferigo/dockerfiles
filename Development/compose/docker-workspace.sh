@@ -18,7 +18,7 @@ docker-workspace() {
 				# If a folder is passed as $2, mount it into the host and set it as
 				# working directory
 				if [ ! -z ${2+x} ] ; then # $2 is not empty
-					if  [ ! -d $2 ] ; then # $2 is an existing folder
+					if  [ -d $2 ] ; then # $2 is an existing folder
 						PROJECT_DIR=$2
 					fi
 				fi
