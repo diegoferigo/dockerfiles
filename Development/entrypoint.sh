@@ -77,5 +77,17 @@ if [ ${COPY_ATOM_PACKAGES} -eq 1 ] ; then
 	echo "Done ..."
 fi
 
+# Configure git
+echo "Setting up git ..."
+su -c "git config --global user.name ${GIT_USER_NAME}" $USERNAME
+su -c "git config --global user.email ${GIT_USER_EMAIL}" $USERNAME
+su -c "git config --global color.pager true" $USERNAME
+su -c "git config --global color.ui auto" $USERNAME
+su -c "git config --global push.default upstream" $USERNAME
+
+# Fix permissions of the IIT sources
+echo ${IIT_DIR}
+chown -R $USERNAME:$USERNAME ${IIT_DIR}
+
 # Load the default ROS entrypoint
 source /ros_entrypoint.sh

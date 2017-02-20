@@ -33,6 +33,8 @@ services:
       - "XAUTHORITY=${XAUTH}"
       - "COPY_ATOM_PACKAGES=1"
       - "PROJECT_DIR=${PROJECT_DIR}"
+      - "GIT_USER_NAME=${GIT_USER_NAME}"
+      - "GIT_USER_EMAIL=${GIT_USER_EMAIL}"
       - "DISPLAY"
     depends_on:
       - ros-master
