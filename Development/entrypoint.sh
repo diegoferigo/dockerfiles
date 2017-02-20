@@ -44,17 +44,17 @@ usermod -aG video ${USERNAME}
 # TODO: fix configuration folders mounting issues
 if [ -d "/home/conf/.gitkraken" ] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/.gitkraken
-	su -c "ln -s /home/conf/.gitkraken/ /home/$USERNAME/.gitkraken" $USERNAME
+	su -c "ln -s /home/conf/.gitkraken /home/$USERNAME/.gitkraken" $USERNAME
 fi
 if [ -d "/home/conf/.atom" ] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/.atom
-	su -c "ln -s /home/conf/.atom/ /home/$USERNAME/.atom" $USERNAME
+	su -c "ln -s /home/conf/.atom /home/$USERNAME/.atom" $USERNAME
 fi
 
 # Same issue as above when mounting a working directory
 if [ -d "/home/conf/project" ] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/project
-	su -c "ln -s /home/conf/project/ /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
+	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
 fi
 
 # Move Atom packages to the user's home
