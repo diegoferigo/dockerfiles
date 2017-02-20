@@ -25,6 +25,7 @@ RUN apt-get update && \
         nano \
         dbus-x11 \
         tree \
+        bash-completion \
         libgnome-keyring0 &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -50,11 +51,13 @@ RUN apt-get update &&\
         build-essential \
         git \
         cmake \
+        cmake-curses-gui \
         llvm \
         clang \
         libclang-dev \
         gdb \
-        valgrind &&\
+        valgrind \
+        doxygen &&\
     rm -rf /var/lib/apt/lists/*
 
 # Packages with no ppa

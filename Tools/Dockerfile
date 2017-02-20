@@ -12,11 +12,13 @@ RUN apt-get install -y \
         build-essential \
         git \
         cmake \
+        cmake-curses-gui \
         llvm \
         clang \
         libclang-dev \
         gdb \
-        valgrind
+        valgrind \
+        doxygen
 
 # Libraries
 
@@ -27,6 +29,7 @@ RUN apt-get install -y \
         nano \
         dbus-x11 \
         tree \
+        bash-completion \
         libgnome-keyring0 &&\
     rm -rf /var/lib/apt/lists/*
 
