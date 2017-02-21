@@ -88,6 +88,9 @@ RUN apt-get update &&\
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM 1
 
+# Include a custom bashrc
+COPY bashrc /home/conf/.bashrc-dev
+
 # Setup an additional entrypoint script
 # For the time being it only creates a new runtime user
 COPY entrypoint.sh /usr/sbin/entrypoint.sh

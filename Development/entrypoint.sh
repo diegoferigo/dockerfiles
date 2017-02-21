@@ -29,6 +29,12 @@ create_user() {
 # Create the user
 create_user
 
+# Setup the custom bashrc
+echo "Including an additional bashrc configuration"
+chown ${USERNAME}:${USERNAME} /home/conf/.bashrc-dev
+echo "source /home/conf/.bashrc-dev" >> /home/${USERNAME}/.bashrc
+echo "source /home/conf/.bashrc-dev" >> /root/.bashrc
+
 # Add the user to video group for HW acceleration (only Intel cards supported)
 usermod -aG video ${USERNAME}
 
