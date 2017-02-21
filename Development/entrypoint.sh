@@ -78,12 +78,15 @@ if [ ${COPY_ATOM_PACKAGES} -eq 1 ] ; then
 fi
 
 # Configure git
-echo "Setting up git ..."
-su -c "git config --global user.name ${GIT_USER_NAME}" $USERNAME
-su -c "git config --global user.email ${GIT_USER_EMAIL}" $USERNAME
-su -c "git config --global color.pager true" $USERNAME
-su -c "git config --global color.ui auto" $USERNAME
-su -c "git config --global push.default upstream" $USERNAME
+if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
+	echo "Setting up git ..."
+	su -c "git config --global user.name ${GIT_USER_NAME}" $USERNAME
+	su -c "git config --global user.email ${GIT_USER_EMAIL}" $USERNAME
+	su -c "git config --global color.pager true" $USERNAME
+	su -c "git config --global color.ui auto" $USERNAME
+	su -c "git config --global push.default upstream" $USERNAME
+	echo "... Done"
+fi
 
 # Fix permissions of the IIT sources
 echo ${IIT_DIR}
