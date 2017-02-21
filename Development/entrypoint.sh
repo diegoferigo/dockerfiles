@@ -74,7 +74,7 @@ if [ ${COPY_ATOM_PACKAGES} -eq 1 ] ; then
 		fi
 	done
 	cd /
-	echo "Done ..."
+	echo "... Done"
 fi
 
 # Configure git
@@ -89,8 +89,9 @@ if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
 fi
 
 # Fix permissions of the IIT sources
-echo ${IIT_DIR}
-chown -R $USERNAME:$USERNAME ${IIT_DIR}
+if [ -d ${IIT_DIR} ] ; then
+	chown -R $USERNAME:$USERNAME ${IIT_DIR}
+fi
 
 # Load the default ROS entrypoint
 source /ros_entrypoint.sh
