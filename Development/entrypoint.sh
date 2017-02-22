@@ -48,17 +48,17 @@ usermod -aG video ${USERNAME}
 # "-v $HOME/.atom:/home/${USERNAME}/.atom" are in conflict for some reason.
 # For the time being, a possible workaround is using symlinks.
 # TODO: fix configuration folders mounting issues
-if [ -d "/home/conf/.gitkraken" ] ; then
+if [[ -d "/home/conf/.gitkraken" && ! -d "/home/$USERNAME/.gitkraken" ]] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/.gitkraken
 	su -c "ln -s /home/conf/.gitkraken /home/$USERNAME/.gitkraken" $USERNAME
 fi
-if [ -d "/home/conf/.atom" ] ; then
+if [[ -d "/home/conf/.atom" && ! -d "/home/$USERNAME/.atom" ]] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/.atom
 	su -c "ln -s /home/conf/.atom /home/$USERNAME/.atom" $USERNAME
 fi
 
 # Same issue as above when mounting a working directory
-if [ -d "/home/conf/project" ] ; then
+if [[ -d "/home/conf/project" && ! -d "/home/$USERNAME/$(basename $PROJECT_DIR)" ]] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/project
 	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
 fi
@@ -67,7 +67,7 @@ fi
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
 COPY_ATOM_PACKAGES=${COPY_ATOM_PACKAGES:-0}
-if [ ${COPY_ATOM_PACKAGES} -eq 1 ] ; then
+if [[ ${COPY_ATOM_PACKAGES} -eq 1 && ! -d "/home/$USERNAME/.atom_packages_from_root" ]] ; then
 	echo "Setting up Atom packages into $USERNAME's home ..."
 	mv /root/.atom /home/$USERNAME/.atom_packages_from_root
 	chown -R $USERNAME:$USERNAME /home/$USERNAME/.atom_packages_from_root
