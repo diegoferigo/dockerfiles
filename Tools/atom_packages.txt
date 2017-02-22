@@ -19,3 +19,4 @@ minimap-highlight-selected
 minimap-codeglance
 language-cmake
 language-docker
+language-thrift
