@@ -1,8 +1,8 @@
 # Colors, colors, colors
 if [ $UID -ne 0 ]; then
-	PS1='${debian_chroot:+($debian_chroot)}\[\e[32;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]\[\033[00;32m\]$(__git_ps1 " (%s)")\e[0m\]$ \e[1m\]'
+	PS1='${debian_chroot:+($debian_chroot)}\[\e[32;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]\[\033[00;32m\]$(__git_ps1 " (%s)")\e[0m\]$ '
 else
-	PS1='${debian_chroot:+($debian_chroot)}\[\e[31;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]# \e[1m\]'
+	PS1='${debian_chroot:+($debian_chroot)}\[\e[31;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]# '
 fi
 
 # Reset PS1 color before command's output
