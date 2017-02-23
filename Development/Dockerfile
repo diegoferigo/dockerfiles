@@ -104,6 +104,9 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/gazebo-yarp-plugins.git &&\
     git clone https://github.com/robotology/codyco-superbuild.git
 
+# Concurrent compilation jobs
+ENV GCC_JOBS=4
+
 # Build all sources
 RUN cd ${IIT_SOURCES}/yarp &&\
     mkdir build && cd build &&\
@@ -112,7 +115,7 @@ RUN cd ${IIT_SOURCES}/yarp &&\
           -DCREATE_GUIS=ON \
           -DCREATE_LIB_MATH=ON \
           .. &&\
-    make install &&\
+    make -j ${GCC_JOBS} install &&\
     ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
           /etc/bash_completion.d/yarp_completion
 ENV YARP_DIR=${IIT_INSTALL}
@@ -128,14 +131,14 @@ RUN cd ${IIT_SOURCES}/icub-main &&\
           -DENABLE_icubmod_cartesiancontrollerclient=ON \
           -DENABLE_icubmod_gazecontrollerclient=ON \
           .. &&\
-    make install
+    make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
 
 RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    make install
+    make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
 RUN cd ${IIT_SOURCES}/robot-testing &&\
@@ -144,13 +147,13 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DENABLE_MIDDLEWARE_PLUGINS=ON \
           .. &&\
-    make install
+    make -j ${GCC_JOBS} install
 
 RUN cd ${IIT_SOURCES}/ycm &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    make install
+    make -j ${GCC_JOBS} install
 
 # TODO: codyco-superbuild does not recognize this plugin and rebuilds it.
 #       The PackageConfig is missing
@@ -158,7 +161,7 @@ RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    make install
+    make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
 
@@ -168,7 +171,7 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
           -DNON_INTERACTIVE_BUILD=ON \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    make
+    make -j ${GCC_JOBS}
 ARG CODYCO_SUPERBUILD_ROOT=${IIT_SOURCES}/codyco-superbuild
 ARG CODYCO_SUPERBUILD_INSTALL=${CODYCO_SUPERBUILD_ROOT}/build/install
 ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${CODYCO_SUPERBUILD_ROOT}/build/install/bin
