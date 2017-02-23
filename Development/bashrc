@@ -56,3 +56,59 @@ bind '"\e[5C": forward-word'
 bind '"\e[5D": backward-word'
 bind '"\e\e[C": forward-word'
 bind '"\e\e[D": backward-word'
+
+# Explicitly enable gcc colored output
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Aliases
+alias cmake='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+alias cmakeiit='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}'
+
+function cm() {
+	if [ -e CMakeLists.txt ] ; then
+		# If build/ exists, remove it
+		if [ -d build/ ] ; then
+			rm -r build/
+		fi
+		# Create an empty build dir and cd inside
+		mkdir build
+		cd build
+		# Execute cmake. You can pass additional cmake flags and they'll be included
+		cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 $@ ..
+		# Copy the compilation database to the project's root (required by linter-clang).
+		# autocomplete-clang instead needs the file to be in the build/ directory
+		cd ..
+		cp build/compile_commands.json .
+		# If rmd is not running, execute it
+		if [ ! "$(ps ax | tr -s " " | cut -d " " -f 6 | grep rdm)" = "rdm" ] ; then
+			echo "-- rdm is not running. Spawning a process"
+			rdm --daemon
+			sleep 1
+		fi
+		# Send to rdm the compilation database
+		rc -J >/dev/null
+	fi
+}
+
+# Custom execution of cmake + make
+function cmm() {
+	cm $@
+	cd build
+	# Build the sources
+	make -j ${GCC_JOBS}
+	cd ..
+}
+
+# Custom execution of cmake + make + make install
+function cmi() {
+	cmm $@
+	cd build
+	# Install the sources
+	make install
+	cd ..
+}
+
+# Custom execution of cmake + make + make install into ${IIT_DIR}
+function cmiit() {
+	cmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}
+}

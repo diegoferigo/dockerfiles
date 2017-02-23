@@ -84,7 +84,7 @@ RUN apt-get update &&\
 
 # Install YARP, iCub and friends from sources
 ENV IIT_DIR=/iit
-ARG IIT_INSTALL=${IIT_DIR}/local
+ENV IIT_INSTALL=${IIT_DIR}/local
 ARG IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
 ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${IIT_BIN}
