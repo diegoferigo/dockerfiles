@@ -23,6 +23,13 @@ docker-workspace() {
 					fi
 				fi
 
+				# Create the persistent bash history file if not already present
+				# This is needed because otherwise docker will create a directory
+				# instead of a text file
+				if [ ! -d $HOME/.bash_history_docker ] ; then
+					touch $HOME/.bash_history_docker
+				fi
+
 				# If unset, mount a temporary folder
 				PROJECT_DIR=${PROJECT_DIR:-"/tmp/docker-tmpfolder"}
 

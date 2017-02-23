@@ -43,6 +43,7 @@ services:
       - "${XAUTH}:${XAUTH}:rw"
       - "${ATOM_CONF}:/home/conf/.atom:rw"
       - "${PROJECT_DIR}:/home/conf/project"
+      - "/home/${USERNAME}/.bash_history_docker:/home/conf/.bash_history:rw"
     command: su -c "atom -f" ${USERNAME}
 
   gitkraken:

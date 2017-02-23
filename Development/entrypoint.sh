@@ -63,6 +63,15 @@ if [[ -d "/home/conf/project" && ! -d "/home/$USERNAME/$(basename $PROJECT_DIR)"
 	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
 fi
 
+# Use persistent bash_history file
+if [ -e "/home/conf/.bash_history" ] ; then
+	if [ -e "/home/$USERNAME/.bash_history" ] ; then
+		rm /home/$USERNAME/.bash_history
+	fi
+	chown $USERNAME:$USERNAME /home/conf/.bash_history
+	su -c "ln -s /home/conf/.bash_history /home/$USERNAME/.bash_history" $USERNAME
+fi
+
 # Move Atom packages to the user's home
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
