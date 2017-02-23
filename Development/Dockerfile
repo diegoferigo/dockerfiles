@@ -186,7 +186,7 @@ ENV PATH=${ROOT_PATH}
 ENV QT_X11_NO_MITSHM 1
 
 # Include a custom bashrc
-COPY bashrc /home/conf/.bashrc-dev
+COPY bashrc /usr/etc/skel/bashrc-dev
 
 # Setup an additional entrypoint script
 # For the time being it only creates a new runtime user

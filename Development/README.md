@@ -23,6 +23,3 @@ for details.
 ```
 docker build --rm -t diego/development .
 ```
-
-### TODO:
-* Fix the problem when mounting the configuration folders

@@ -41,9 +41,9 @@ services:
     volumes:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
-      - "${ATOM_CONF}:/home/conf/.atom:rw"
-      - "${PROJECT_DIR}:/home/conf/project:rw"
-      - "/home/${USERNAME}/.bash_history_docker:/home/conf/.bash_history:rw"
+      - "${ATOM_CONF}:/home/${USERNAME}/.atom:rw"
+      - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
+      - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
     command: su -c "atom -f" ${USERNAME}
 
   gitkraken:
@@ -59,6 +59,6 @@ services:
     volumes:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
-      - "${GITKRAKEN_CONF}:/home/conf/.gitkraken:rw"
-      - "${PROJECT_DIR}:/home/conf/project:rw"
+      - "${GITKRAKEN_CONF}:/home/${USERNAME}/.gitkraken:rw"
+      - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
     command: su -c "gitkraken" ${USERNAME}

@@ -35,7 +35,9 @@ docker-workspace() {
 
 				# Compose the workspace containers
 				echo "=> Composing the containers"
-				PROJECT_DIR=$PROJECT_DIR docker-compose up -d
+				PROJECT_DIR=$PROJECT_DIR \
+				PROJECT_BASENAME=$(basename $PROJECT_DIR) \
+				docker-compose up -d
 		  ;;
 		  stop|down)
 				# Stop and remove the composed containers

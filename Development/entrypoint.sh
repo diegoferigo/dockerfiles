@@ -7,22 +7,37 @@ USER_GID=${USER_GID:-1000}
 USERNAME=${USERNAME:-docker}
 
 create_user() {
-	# If the home folder exists, copy inside the default files of a home directory
-	if [ -d /home/${USERNAME} ] ; then
-		chown ${USER_UID}:${USER_GID} /home/${USERNAME}
-		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bashrc /home/${USERNAME}
-		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bash_logout /home/${USERNAME}
-		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.profile /home/${USERNAME}
-	fi
+	# If the home folder exists, set a flag.
+	# Creating the user during container initialization often is anticipated
+	# by the mount of a docker volume. In this case the home directory is already
+	# present in the file system and adduser skips by default the copy of the
+	# configuration files
+	HOME_FOLDER_EXISTS=0
+	if [ -d /home/$USERNAME ] ; then HOME_FOLDER_EXISTS=1 ; fi
 
 	# Create a group with USER_GID
 	if ! getent group ${USERNAME} >/dev/null; then
+		echo "Creating ${USERNAME} group"
 		groupadd -f -g ${USER_GID} ${USERNAME} 2> /dev/null
 	fi
 
 	# Create a user with USER_UID
 	if ! getent passwd ${USERNAME} >/dev/null; then
-		adduser --disabled-login --uid ${USER_UID} --gid ${USER_GID} --gecos 'Workspace' ${USERNAME}
+		echo "Creating ${USERNAME} user"
+		adduser --quiet \
+		        --disabled-login \
+				  --uid ${USER_UID} \
+				  --gid ${USER_GID} \
+				  --gecos 'Workspace' \
+				  ${USERNAME}
+	fi
+
+	# If configuration files have not been copied, do it manually
+	if [ HOME_FOLDER_EXISTS ] ; then
+		chown ${USER_UID}:${USER_GID} /home/${USERNAME}
+		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bashrc /home/${USERNAME}
+		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bash_logout /home/${USERNAME}
+		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.profile /home/${USERNAME}
 	fi
 }
 
@@ -31,56 +46,33 @@ create_user
 
 # Setup the custom bashrc
 echo "Including an additional bashrc configuration"
-chown ${USERNAME}:${USERNAME} /home/conf/.bashrc-dev
-echo "source /home/conf/.bashrc-dev" >> /home/${USERNAME}/.bashrc
-echo "source /home/conf/.bashrc-dev" >> /root/.bashrc
+cp /usr/etc/skel/bashrc-dev /home/$USERNAME/.bashrc-dev
+chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-dev
+echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
+echo "source /home/$USERNAME/.bashrc-dev" >> /root/.bashrc
 
 # Add the user to video group for HW acceleration (only Intel cards supported)
 usermod -aG video ${USERNAME}
 
-# There is a weird issue when mounting the ~/.atom and ~/.gitkraken folders.
-# The user is created during runtime by this script. The folders are mounted by
-# `docker run` supposedly before the execution of this script. However, I get a
-# strange error:
-# > install: invalid user diego
-# when trying to mount the directories. If mounting destination is not in
-# /home/$USERNAME, all works flawless.It seems that "-e $USERNAME" and
-# "-v $HOME/.atom:/home/${USERNAME}/.atom" are in conflict for some reason.
-# For the time being, a possible workaround is using symlinks.
-# TODO: fix configuration folders mounting issues
-if [[ -d "/home/conf/.gitkraken" && ! -d "/home/$USERNAME/.gitkraken" ]] ; then
-	chown -R $USERNAME:$USERNAME /home/conf/.gitkraken
-	su -c "ln -s /home/conf/.gitkraken /home/$USERNAME/.gitkraken" $USERNAME
-fi
-if [[ -d "/home/conf/.atom" && ! -d "/home/$USERNAME/.atom" ]] ; then
-	chown -R $USERNAME:$USERNAME /home/conf/.atom
-	su -c "ln -s /home/conf/.atom /home/$USERNAME/.atom" $USERNAME
-fi
-
-# Same issue as above when mounting a working directory
-if [ $PROJECT_DIR = ${IIT_DIR} ] ; then
-	PROJECT_DIR=_${PROJECT_DIR}
-fi
-if [[ -d "/home/conf/project" && ! -d "/home/$USERNAME/$(basename $PROJECT_DIR)" ]] ; then
-	chown -R $USERNAME:$USERNAME /home/conf/project
-	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
+# Mount the project directory
+if [ -d "/home/$USERNAME/$(basename ${PROJECT_DIR})" ] ; then
+	chown -R $USERNAME:$USERNAME /home/$USERNAME/$(basename ${PROJECT_DIR})
 fi
 
 # Use persistent bash_history file
-if [ -e "/home/conf/.bash_history" ] ; then
-	if [ -e "/home/$USERNAME/.bash_history" ] ; then
-		rm /home/$USERNAME/.bash_history
-	fi
-	chown $USERNAME:$USERNAME /home/conf/.bash_history
-	su -c "ln -s /home/conf/.bash_history /home/$USERNAME/.bash_history" $USERNAME
+if [ -e "/home/$USERNAME/.bash_history" ] ; then
+	chown $USERNAME:$USERNAME /home/$USERNAME/.bash_history
 fi
 
 # Move Atom packages to the user's home
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
 COPY_ATOM_PACKAGES=${COPY_ATOM_PACKAGES:-0}
-if [[ ${COPY_ATOM_PACKAGES} -eq 1 && ! -d "/home/$USERNAME/.atom_packages_from_root" ]] ; then
+if [[ ${COPY_ATOM_PACKAGES} -eq 1 ]] ; then
 	echo "Setting up Atom packages into $USERNAME's home ..."
+	if [ -d "/home/$USERNAME/.atom_packages_from_root" ] ; then
+		rm -r "/home/$USERNAME/.atom_packages_from_root"
+	fi
 	mv /root/.atom /home/$USERNAME/.atom_packages_from_root
 	chown -R $USERNAME:$USERNAME /home/$USERNAME/.atom_packages_from_root
 	declare -a ATOM_PACKAGES
