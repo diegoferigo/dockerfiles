@@ -98,6 +98,13 @@ if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
 	echo "... Done"
 fi
 
+# Move the ccache folder into the user's home
+if [[ -d /root/.ccache && ! -d "/home/$USERNAME/.ccache" ]] ; then
+	echo "Moving ccache directory"
+	mv /root/.ccache /home/$USERNAME/.ccache
+	chown -R $USERNAME:$USERNAME /home/$USERNAME/.ccache
+fi
+
 # Fix permissions of the IIT directory and link it into the user's home
 if [ -d ${IIT_DIR} ] ; then
 	chown -R $USERNAME:$USERNAME ${IIT_DIR}

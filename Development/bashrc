@@ -9,7 +9,7 @@ fi
 trap 'echo -ne "\e[0m"' DEBUG
 
 # Update the PATH
-PATH=${IIT_PATH:+${IIT_PATH}:}$PATH
+PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
 
 # Load the ROS environment
 source "/opt/ros/$ROS_DISTRO/setup.bash"
