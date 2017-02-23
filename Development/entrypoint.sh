@@ -58,6 +58,9 @@ if [[ -d "/home/conf/.atom" && ! -d "/home/$USERNAME/.atom" ]] ; then
 fi
 
 # Same issue as above when mounting a working directory
+if [ $PROJECT_DIR = ${IIT_DIR} ] ; then
+	PROJECT_DIR=_${PROJECT_DIR}
+fi
 if [[ -d "/home/conf/project" && ! -d "/home/$USERNAME/$(basename $PROJECT_DIR)" ]] ; then
 	chown -R $USERNAME:$USERNAME /home/conf/project
 	su -c "ln -s /home/conf/project /home/$USERNAME/$(basename $PROJECT_DIR)" $USERNAME
@@ -103,9 +106,10 @@ if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
 	echo "... Done"
 fi
 
-# Fix permissions of the IIT sources
+# Fix permissions of the IIT directory and link it into the user's home
 if [ -d ${IIT_DIR} ] ; then
 	chown -R $USERNAME:$USERNAME ${IIT_DIR}
+	su -c "ln -s ${IIT_DIR} /home/$USERNAME/$IIT_DIR" $USERNAME
 fi
 
 # Load the default ROS entrypoint
