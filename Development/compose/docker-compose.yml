@@ -42,7 +42,7 @@ services:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
       - "${ATOM_CONF}:/home/conf/.atom:rw"
-      - "${PROJECT_DIR}:/home/conf/project"
+      - "${PROJECT_DIR}:/home/conf/project:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/conf/.bash_history:rw"
     command: su -c "atom -f" ${USERNAME}
 
@@ -60,5 +60,5 @@ services:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
       - "${GITKRAKEN_CONF}:/home/conf/.gitkraken:rw"
-      - "${PROJECT_DIR}:/home/conf/project"
+      - "${PROJECT_DIR}:/home/conf/project:rw"
     command: su -c "gitkraken" ${USERNAME}
