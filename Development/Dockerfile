@@ -157,8 +157,6 @@ RUN cd ${IIT_SOURCES}/ycm &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
-# TODO: codyco-superbuild does not recognize this plugin and rebuilds it.
-#       The PackageConfig is missing
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
