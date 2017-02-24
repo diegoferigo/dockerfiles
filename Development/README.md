@@ -12,7 +12,7 @@ Its start is demanded to a `docker-compose` system. Check the `compose` folder
 for details.
 
 ## Features:
-* Image size: 5.8GB
+* Image size: 6 GB
 * Development setup working out-of-the-box
 * X11 authentication for GUIs
 * User created during runtime

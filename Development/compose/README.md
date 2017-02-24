@@ -9,7 +9,7 @@ The composed system consists of the following containers:
 * **`development` container:** Atom Editor (`Development`)
 * **`gitkraken` container:** GitKraken (`Development`)
 * **`ros-master` container:** `roscore` (`ROS`)
-* **`yarp-master` container:** Yarp Server (`YARP`)
+* **`yarp-server` container:** Yarp Server (`YARP`)
 
 In order to start the development environment, execute the helper script:
 ```bash
