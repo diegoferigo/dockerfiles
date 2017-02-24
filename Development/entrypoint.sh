@@ -68,7 +68,7 @@ fi
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
 COPY_ATOM_PACKAGES=${COPY_ATOM_PACKAGES:-0}
-if [[ ${COPY_ATOM_PACKAGES} -eq 1 ]] ; then
+if [[ ${COPY_ATOM_PACKAGES} -eq 1 && -d "/root/.atom" ]] ; then
 	echo "Setting up Atom packages into $USERNAME's home ..."
 	if [ -d "/home/$USERNAME/.atom_packages_from_root" ] ; then
 		rm -r "/home/$USERNAME/.atom_packages_from_root"
