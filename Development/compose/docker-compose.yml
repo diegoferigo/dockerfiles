@@ -11,12 +11,16 @@ services:
       - ${ROS_MASTER_PORT}:${ROS_MASTER_PORT}
     command: roscore
 
-  # yarp-master:
-  #   image: "${YARP_MASTER_IMAGE}"
-  #   container_name: yarp-master
-  #   ports:
-  #     - ${YARP_MASTER_PORT}:${YARP_MASTER_PORT}
-  #   command:
+  yarp-server:
+    image: "${YARP_MASTER_IMAGE}"
+    container_name: yarp-server
+    environment:
+      - "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
+      - "USERNAME=${USERNAME}"
+    ports:
+      - "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}"
+      - "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}/udp"
+    command: sh -c 'yarp namespace ${YARP_NAME_SPACE} && yarpserver'
 
   #
   # DEVELOPMENT CONTAINERS
@@ -25,8 +29,9 @@ services:
     image: "${DEVELOPMENT_IMAGE}"
     container_name: development
     environment:
-      - "ROS_HOSTNAME=development"
-      - "ROS_MASTER_URI=http://ros-master:${ROS_MASTER_PORT}"
+      #- "ROS_HOSTNAME=development"
+      #- "ROS_MASTER_URI=http://ros-master:${ROS_MASTER_PORT}"
+      - "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
       - "USER_UID=${USER_UID}"
       - "USER_GID=${USER_GID}"
       - "USERNAME=${USERNAME}"
@@ -37,13 +42,17 @@ services:
       - "GIT_USER_EMAIL=${GIT_USER_EMAIL}"
       - "DISPLAY"
     depends_on:
-      - ros-master
+      # - ros-master
+      - yarp-server
     volumes:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
       - "${ATOM_CONF}:/home/${USERNAME}/.atom:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
+    ports:
+      - "11000-11050:10000-10050"
+      - "11000-11050:10000-10050/udp"
     command: su -c "atom -f" ${USERNAME}
 
   gitkraken:

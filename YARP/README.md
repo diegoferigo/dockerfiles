@@ -54,6 +54,16 @@ docker run -i -t --rm \
 If you need HW acceleration (only for Intel graphic cards), add also this device
 flag `--device=/dev/dri`.
 
+## Starting a YARP server container
+```
+docker run -i -t --rm \
+	-p 10000:10000 \
+	-e USERNAME=$(whoami) \
+	--name yarp \
+	diego/yarp \
+	sh -c 'yarp namespace /${USERNAME} && yarpserver'
+```
+
 ## TODO
 * YARP dynamically opens ports. Check how to handle its behavior
 

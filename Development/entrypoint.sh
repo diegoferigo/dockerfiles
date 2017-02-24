@@ -111,5 +111,9 @@ if [ -d ${IIT_DIR} ] ; then
 	su -c "ln -s ${IIT_DIR} /home/$USERNAME/$IIT_DIR" $USERNAME
 fi
 
+# Configure YARP namespace and connect to the server
+su -c 'eval "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE}"' $USERNAME
+su -c '${IIT_INSTALL}/bin/yarp detect --write' $USERNAME
+
 # Load the default ROS entrypoint
 source /ros_entrypoint.sh
