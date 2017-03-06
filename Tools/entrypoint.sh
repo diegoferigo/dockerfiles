@@ -33,7 +33,7 @@ create_user() {
 	fi
 
 	# If configuration files have not been copied, do it manually
-	if [ HOME_FOLDER_EXISTS ] ; then
+	if [ $HOME_FOLDER_EXISTS -gt 0 ] ; then
 		chown ${USER_UID}:${USER_GID} /home/${USERNAME}
 		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bashrc /home/${USERNAME}
 		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bash_logout /home/${USERNAME}
