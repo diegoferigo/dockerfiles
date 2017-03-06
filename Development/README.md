@@ -21,5 +21,10 @@ for details.
 
 ## Build the image
 ```
-docker build --rm -t diego/development .
+docker build --rm -t diegoferigo/development .
+```
+
+## Alternative: get the image from dockerhub
+```
+docker pull diegoferigo/development .
 ```

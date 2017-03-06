@@ -53,7 +53,12 @@ this `~/.atom/config.cson` as default configuration:
 
 ## Build the image
 ```
- docker build -t diego/tools .
+ docker build -t diegoferigo/tools .
+```
+
+## Alternative: get the image from dockerhub
+```
+docker pull diegoferigo/tools .
 ```
 
 ## User configuration
@@ -72,7 +77,7 @@ docker run -i -t --rm \
 	-e USER_GID=$USER_GID \
 	-e USERNAME=$USERNAME \
 	--name tools \
-	diego/tools \
+	diegoferigo/tools \
 	bash
 ```
 Then, spawn as many ttys as needed with
@@ -98,7 +103,7 @@ docker run -i -t --rm \
 	-e "DISPLAY" \
 	-e USERNAME=$USERNAME \
 	--name tools \
-	diego/tools \
+	diegoferigo/tools \
 	su -c "atom -f" $USERNAME
 ```
 In order to run applications as user and not root, remember to launch them with
@@ -123,7 +128,7 @@ docker run -i -t --rm \
 	-e COPY_ATOM_PACKAGES=1 \
 	-v /home/diego/.atom_docker:/home/conf/.atom \
 	--name tools \
-	diego/tools \
+	diegoferigo/tools \
 	su -c "atom -f" $USERNAME
 ```
 
@@ -134,7 +139,7 @@ Is it worth to include systemd in the image to gracefully handle services like t
 ([reference for rdm][18])
 * `linter-clang` [should support][13] also the `compile_commands.json`.
 Follow [this bug report][14].
-* It would be great to have an atom package that handles ROS in the tree view
+* It would be great to have an atom package that handles ROS / YARP in the tree view
 as [RoboWare][15]
 
 ### Resources

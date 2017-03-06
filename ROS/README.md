@@ -7,7 +7,7 @@ Features:
 
 ## Build the image
 ```
-docker build -t diego/ros-desktop-full .
+docker build -t diegoferigo/ros-desktop-full .
 ```
 
 ## User configuration
@@ -26,7 +26,7 @@ docker run -i -t --rm \
 	-e USER_GID=$USER_GID \
 	-e USERNAME=$USERNAME \
 	--name ros \
-	diego/ros-desktop-full \
+	diegoferigo/ros-desktop-full \
 	bash
 ```
 Then, create as many ttys as needed with
@@ -53,7 +53,7 @@ docker run -i -t --rm \
 	-e XAUTHORITY=${XAUTH} \
 	-e DISPLAY \
 	--name ros \
-	diego/ros-desktop-full \
+	diegoferigo/ros-desktop-full \
 	rqt
 ```
 If you need HW acceleration (only for Intel graphic cards), add also this device

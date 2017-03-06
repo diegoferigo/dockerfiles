@@ -7,7 +7,12 @@ Features:
 
 ## Build the image
 ```
- docker build -t diego/yarp .
+ docker build -t diegoferigo/yarp .
+```
+
+## Alternative: get the image from dockerhub
+```
+docker pull diegoferigo/yarp .
 ```
 
 ## User configuration
@@ -25,7 +30,7 @@ docker run -i -t --rm \
 	-e USERNAME=$USERNAME \
 	-p 10000:10000 \
 	--name yarp \
-	diego/yarp \
+	diegoferigo/yarp \
 	bash
 ```
 Then, open as many ttys as needed with
@@ -48,7 +53,7 @@ docker run -i -t --rm \
 	-e XAUTHORITY=${XAUTH} \
 	-e "DISPLAY" \
 	--name yarp \
-	diego/yarp \
+	diegoferigo/yarp \
 	iCubGui
 ```
 If you need HW acceleration (only for Intel graphic cards), add also this device
@@ -60,7 +65,7 @@ docker run -i -t --rm \
 	-p 10000:10000 \
 	-e USERNAME=$(whoami) \
 	--name yarp \
-	diego/yarp \
+	diegoferigo/yarp \
 	sh -c 'yarp namespace /${USERNAME} && yarpserver'
 ```
 
