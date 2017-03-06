@@ -1,14 +1,9 @@
-FROM ubuntu:yakkety
+FROM ubuntu:xenial
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
-# Variables
-ARG GITKRAKEN_VER=2.0.1
-
-# The update is done only here and then cached
-RUN apt-get update
-
 # Build and development tools
-RUN apt-get install -y \
+RUN apt-get update &&\
+    apt-get install -y \
         build-essential \
         git \
         cmake \
@@ -18,12 +13,24 @@ RUN apt-get install -y \
         libclang-dev \
         gdb \
         valgrind \
-        doxygen
+        ccache \
+        doxygen &&\
+    rm -rf /var/lib/apt/lists/*
+ENV ROOT_PATH=$PATH
+ENV PATH=/usr/lib/ccache:${ROOT_PATH}
 
 # Libraries
 
+# Setup HW Acceleration for Intel graphic cards
+RUN apt-get update &&\
+    apt-get install -y \
+        libgl1-mesa-glx \
+        libgl1-mesa-dri &&\
+    rm -rf /var/lib/apt/lists/*
+
 # Other packages
-RUN apt-get install -y \
+RUN apt-get update &&\
+    apt-get install -y \
         software-properties-common \
         wget \
         nano \
@@ -43,6 +50,7 @@ RUN add-apt-repository -y ppa:webupd8team/atom &&\
     rm -rf /var/lib/apt/lists/*
 
 # Packages with no ppa
+ARG GITKRAKEN_VER=2.1.0
 RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /v${GITKRAKEN_VER}.deb &&\
     rm /v${GITKRAKEN_VER}.deb

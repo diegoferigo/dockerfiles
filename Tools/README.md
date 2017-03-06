@@ -15,7 +15,7 @@ host system, in order to keep the setups separated you can consider mounting a
 different folder instead of `~/.atom`.
 
 ### Image Features:
-* Image size: 1.8GB
+* Image size: 2.3GB
 * Out-of-the-box development setup, quickly portable on any machine
 * X11 authentication for GUIs
 * User created during runtime
