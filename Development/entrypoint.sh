@@ -33,7 +33,7 @@ create_user() {
 	fi
 
 	# If configuration files have not been copied, do it manually
-	if [ HOME_FOLDER_EXISTS ] ; then
+	if [ $HOME_FOLDER_EXISTS ] ; then
 		chown ${USER_UID}:${USER_GID} /home/${USERNAME}
 		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bashrc /home/${USERNAME}
 		install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/.bash_logout /home/${USERNAME}
@@ -56,7 +56,7 @@ usermod -aG video ${USERNAME}
 
 # Mount the project directory
 if [ -d "/home/$USERNAME/$(basename ${PROJECT_DIR})" ] ; then
-	chown -R $USERNAME:$USERNAME /home/$USERNAME/$(basename ${PROJECT_DIR})
+	chown -R $USERNAME:$USERNAME /home/$USERNAME/"$(basename ${PROJECT_DIR})"
 fi
 
 # Use persistent bash_history file
@@ -77,8 +77,8 @@ if [[ ${COPY_ATOM_PACKAGES} -eq 1 && -d "/root/.atom" ]] ; then
 	chown -R $USERNAME:$USERNAME /home/$USERNAME/.atom_packages_from_root
 	declare -a ATOM_PACKAGES
 	ATOM_PACKAGES=($(find /home/$USERNAME/.atom_packages_from_root/packages -mindepth 1 -maxdepth 1 -type d))
-	for package in ${ATOM_PACKAGES[@]} ; do
-		if [ ! -e /home/$USERNAME/.atom/packages/$(basename $package) ] ; then
+	for package in "${ATOM_PACKAGES[@]}" ; do
+		if [ ! -e /home/$USERNAME/.atom/packages/"$(basename $package)" ] ; then
 			cd $package
 			su -c "apm link" $USERNAME
 		fi
@@ -108,7 +108,9 @@ fi
 # Fix permissions of the IIT directory and link it into the user's home
 if [ -d ${IIT_DIR} ] ; then
 	chown -R $USERNAME:$USERNAME ${IIT_DIR}
-	su -c "ln -s ${IIT_DIR} /home/$USERNAME/$IIT_DIR" $USERNAME
+	if [ ! -d /home/$USERNAME/$IIT_DIR ] ; then
+		su -c "ln -s ${IIT_DIR} /home/$USERNAME/$IIT_DIR" $USERNAME
+	fi
 fi
 
 # Configure YARP namespace and connect to the server
