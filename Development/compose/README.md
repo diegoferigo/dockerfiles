@@ -13,10 +13,17 @@ The composed system consists of the following containers:
 
 In order to start the development environment, execute the helper script:
 ```bash
-./docker-workspace start
+./docker-workspace.sh start
 ```
 
 For closing it, execute:
 ```bash
-./docker-workspace stop
+./docker-workspace.sh stop
 ```
+
+## Resources:
+* [`docker-library` documentation on ROS][1]
+* [Docker Experimental Networking and ROS][2]
+
+[1]: https://github.com/docker-library/docs/tree/master/ros#compose
+[2]: http://toddsampson.com/post/131227320927/docker-experimental-networking-and-ros
