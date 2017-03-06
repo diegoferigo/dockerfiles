@@ -5,6 +5,9 @@ else
 	PS1='${debian_chroot:+($debian_chroot)}\[\e[31;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]# '
 fi
 
+# After changing user, cd inside $HOME. Use $(cd -) to get back to the previous folder
+cd $HOME || return 1
+
 # Reset PS1 color before command's output
 trap 'echo -ne "\e[0m"' DEBUG
 
@@ -12,6 +15,7 @@ trap 'echo -ne "\e[0m"' DEBUG
 PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
 
 # Load the ROS environment
+# shellcheck source=/opt/ros/$ROS_DISTRO/setup.bash
 source "/opt/ros/$ROS_DISTRO/setup.bash"
 
 # Load the gazebo environment
@@ -64,6 +68,13 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 alias cmake='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias cmakeiit='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}'
 
+function mkdircd() {
+	if [ ! -d  $1 ] ; then
+		mkdir -p $1
+		cd $1 || return 1
+	fi
+}
+
 function cm() {
 	if [ -e CMakeLists.txt ] ; then
 		# If build/ exists, remove it
@@ -72,13 +83,17 @@ function cm() {
 		fi
 		# Create an empty build dir and cd inside
 		mkdir build
-		cd build
+		cd build  || return 1
 		# Execute cmake. You can pass additional cmake flags and they'll be included
-		cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 $@ ..
+		cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" ..
 		# Copy the compilation database to the project's root (required by linter-clang).
 		# autocomplete-clang instead needs the file to be in the build/ directory
 		cd ..
-		cp build/compile_commands.json .
+		if [ -e build/compile_commands.json ] ; then
+			cp build/compile_commands.json .
+		else
+			echo "File compile_commands.json not found"
+		fi
 		# If rmd is not running, execute it
 		if [ ! "$(ps ax | tr -s " " | cut -d " " -f 6 | grep rdm)" = "rdm" ] ; then
 			echo "-- rdm is not running. Spawning a process"
@@ -86,14 +101,16 @@ function cm() {
 			sleep 1
 		fi
 		# Send to rdm the compilation database
-		rc -J >/dev/null
+		if [ -e build/compile_commands.json ] ; then
+			rc -J >/dev/null
+		fi
 	fi
 }
 
 # Custom execution of cmake + make
 function cmm() {
-	cm $@
-	cd build
+	cm "$@"
+	cd build || return 1
 	# Build the sources
 	make -j ${GCC_JOBS}
 	cd ..
@@ -101,8 +118,8 @@ function cmm() {
 
 # Custom execution of cmake + make + make install
 function cmi() {
-	cmm $@
-	cd build
+	cmm "$@"
+	cd build || return 1
 	# Install the sources
 	make install
 	cd ..
