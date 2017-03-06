@@ -1,13 +1,14 @@
-Dockerfile for ROS Kinetic `desktop-full`, built on top of the ros:kinetic official image
+Dockerfile for ROS Kinetic `desktop-full`, built on top of the
+`osrf/ros:kinetic-desktop-full` image.
 
 Features:
 * X11 authentication for GUIs
-* Image size: 3.47GB
+* Image size: 3.4GB
 * User created during runtime
 
 ## Build the image
 ```
-docker build -t diegoferigo/ros-desktop-full .
+docker build -t diegoferigo/ros .
 ```
 
 ## User configuration
@@ -26,7 +27,7 @@ docker run -i -t --rm \
 	-e USER_GID=$USER_GID \
 	-e USERNAME=$USERNAME \
 	--name ros \
-	diegoferigo/ros-desktop-full \
+	diegoferigo/ros \
 	bash
 ```
 Then, create as many ttys as needed with
@@ -53,7 +54,7 @@ docker run -i -t --rm \
 	-e XAUTHORITY=${XAUTH} \
 	-e DISPLAY \
 	--name ros \
-	diegoferigo/ros-desktop-full \
+	diegoferigo/ros \
 	rqt
 ```
 If you need HW acceleration (only for Intel graphic cards), add also this device

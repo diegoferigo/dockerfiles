@@ -48,4 +48,4 @@ create_user
 usermod -aG video ${USERNAME}
 
 # Load the default ROS entrypoint
-source /ros_entrypoint.sh "$@"
+source /ros_entrypoint.sh
