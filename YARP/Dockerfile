@@ -1,19 +1,14 @@
 FROM ubuntu:xenial
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
-RUN sh -c 'echo "deb http://www.icub.org/ubuntu xenial contrib/science" > /etc/apt/sources.list.d/icub.list' &&\
+RUN echo "deb http://www.icub.org/ubuntu xenial contrib/science" \
+        > /etc/apt/sources.list.d/icub.list &&\
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 57A5ACB6110576A6 &&\
     apt-get update &&\
     apt-get install -y \
         yarp \
         icub &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    dpkg-reconfigure locales &&\
-    locale-gen en_US.UTF-8 &&\
-    echo "Europe/Rome" > /etc/timezone &&\
-    dpkg-reconfigure --frontend noninteractive tzdata &&\
-    apt-get autoclean &&\
-    apt-get autoremove
+    rm -rf /var/lib/apt/lists/*
 
 RUN yarp check
 EXPOSE 10000/tcp
