@@ -4,6 +4,8 @@ build-cmake
 busy
 linter
 linter-clang
+linter-shellcheck
+linter-js-yaml
 autocomplete-clang
 autocomplete-cmake
 autocomplete-xml
@@ -20,3 +22,8 @@ minimap-codeglance
 language-cmake
 language-docker
 language-thrift
+clang-format
+docblockr
+project-manager
+simple-drag-drop-text
+file-icons
