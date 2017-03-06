@@ -17,13 +17,14 @@ EXPOSE 10000/tcp
 ENV QT_X11_NO_MITSHM 1
 
 # Required by gazebo-yarp-plugins
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
-    echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list &&\
-    apt-get update &&\
+RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable xenial main" \
+        > /etc/apt/sources.list.d/gazebo-stable.list &&\
+    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
+	 apt-get update &&\
     apt-get install -y --no-install-recommends \
-        gazebo7 \
-        gazebo7-plugin-base \
-        libgazebo7-dev &&\
+        gazebo8 \
+        gazebo8-plugin-base \
+        libgazebo8-dev &&\
     rm -rf /var/lib/apt/lists/*
 
 # Setup HW Acceleration for Intel graphic cards
