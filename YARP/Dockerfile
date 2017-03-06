@@ -1,4 +1,4 @@
-FROM robotology/yarp:gazebo8bin
+FROM robotology/yarp-gazebo:gazebo8bin
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Setup HW Acceleration for Intel graphic cards
