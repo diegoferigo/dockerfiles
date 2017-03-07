@@ -2,8 +2,11 @@
 set -e
 
 # Load entrypoint script from parent image
-ARGS=("${@}")
-unset @
+# ARGS=("$@")
+# set --
+# TODO: find a better way to handle $@ passing that does not require
+#       any edits to the parent's script
+IS_SOURCED=1
 source /usr/sbin/entrypoint.sh
 
 # Setup the custom bashrc
@@ -50,4 +53,4 @@ fi
 
 # Setup ROS environment
 source "/opt/ros/$ROS_DISTRO/setup.bash"
-exec "${ARGS[*]}"
+exec "$@"

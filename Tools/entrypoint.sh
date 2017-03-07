@@ -78,4 +78,6 @@ if [[ -d /root/.ccache && ! -d "/home/$USERNAME/.ccache" ]] ; then
 fi
 
 # If a CMD is passed, execute it
-exec "$@"
+if [ ! -n "$IS_SOURCED" ] ; then
+	exec "$@"
+fi
