@@ -17,7 +17,7 @@ echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
 echo "source /home/$USERNAME/.bashrc-dev" >> /root/.bashrc
 
 # Mount the project directory
-if [ -d "/home/$USERNAME/$(basename ${PROJECT_DIR})" ] ; then
+if [[ -n ${PROJECT_DIR} && -d "/home/$USERNAME/$(basename ${PROJECT_DIR})" ]] ; then
 	chown -R $USERNAME:$USERNAME /home/$USERNAME/"$(basename ${PROJECT_DIR})"
 fi
 
