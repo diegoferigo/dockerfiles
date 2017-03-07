@@ -51,9 +51,9 @@ services:
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
     ports:
-      - "11000-11050:10000-10050"
-      - "11000-11050:10000-10050/udp"
-    command: su -c "atom -f" ${USERNAME}
+      - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}"
+      - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}/udp"
+    command: su -c 'atom -f' ${USERNAME}
 
   gitkraken:
     image: "${DEVELOPMENT_IMAGE}"
