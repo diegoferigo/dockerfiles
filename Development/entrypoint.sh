@@ -34,6 +34,10 @@ if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
 	su -c "git config --global color.pager true" $USERNAME
 	su -c "git config --global color.ui auto" $USERNAME
 	su -c "git config --global push.default upstream" $USERNAME
+  if [ ${GIT_USE_GPG}=1 ] ; then
+    su -c "git config --global commit.gpgsign true" $USERNAME
+    su -c "git config --global user.signingkey ${GIT_GPG_KEY}" $USERNAME
+  fi
 	echo "... Done"
 fi
 

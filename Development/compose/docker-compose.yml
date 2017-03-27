@@ -40,6 +40,7 @@ services:
       - "PROJECT_DIR=${PROJECT_DIR}"
       - "GIT_USER_NAME=${GIT_USER_NAME}"
       - "GIT_USER_EMAIL=${GIT_USER_EMAIL}"
+      - "GIT_USE_GPG=1"
       - "DISPLAY"
     depends_on:
       # - ros-master
@@ -48,6 +49,7 @@ services:
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
       - "${ATOM_CONF}:/home/${USERNAME}/.atom:rw"
+      - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:ro"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
     ports:
@@ -70,4 +72,6 @@ services:
       - "${XAUTH}:${XAUTH}:rw"
       - "${GITKRAKEN_CONF}:/home/${USERNAME}/.gitkraken:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
+      # Waiting gitkraken GPG signing support
+      # - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:ro"
     command: su -c "gitkraken" ${USERNAME}
