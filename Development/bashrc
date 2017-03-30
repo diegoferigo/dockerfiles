@@ -149,3 +149,25 @@ function cmi() {
 function cmiit() {
 	cmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}
 }
+
+# Function to switch gcc/clang compiler
+function compiler.set() {
+	if [[ "$1" = "gcc" || "$1" = "clang" ]] ; then
+		case $1 in
+			gcc)   export CC="gcc"   && export CXX="g++"     ;;
+			clang) export CC="clang" && export CXX="clang++" ;;
+		esac
+	else
+		echo "$1: only gcc and clang are supported compilers"
+		return 1
+	fi
+}
+function compiler.get() {
+	if [[ "$CC" = "gcc" && "$CXX" = "g++" ]] ; then
+		echo "The active compiler is: gcc"
+	elif [[ "$CC" = "clang" && "$CXX" = "clang++" ]] ; then
+		echo "The active compiler is: clang"
+	else
+		echo "The compiler environment variables aren't set"
+	fi
+}
