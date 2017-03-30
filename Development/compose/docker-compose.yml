@@ -29,32 +29,50 @@ services:
     image: "${DEVELOPMENT_IMAGE}"
     container_name: development
     environment:
+      # ROS/YARP Variables
       #- "ROS_HOSTNAME=development"
       #- "ROS_MASTER_URI=http://ros-master:${ROS_MASTER_PORT}"
       - "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
+      # Runtime user variables
       - "USER_UID=${USER_UID}"
       - "USER_GID=${USER_GID}"
       - "USERNAME=${USERNAME}"
+      # X11 Forwarding
       - "XAUTHORITY=${XAUTH}"
+      - "DISPLAY"
+      # Misc variables
       - "COPY_ATOM_PACKAGES=1"
       - "PROJECT_DIR=${PROJECT_DIR}"
+      # Git variables
       - "GIT_USER_NAME=${GIT_USER_NAME}"
       - "GIT_USER_EMAIL=${GIT_USER_EMAIL}"
-      - "GIT_USE_GPG=1"
-      - "DISPLAY"
+      # GPG commit signing variables
+      # TODO: the only workaround I found to sign a commit is executing with:
+      #         $ script -q -c "GPG_TTY=/dev/pts/0 git commit -m (...)
+      #       since $(tty) is not recognized either with docker exec and inside script
+      # - "GIT_USE_GPG=1"
+      # - "GIT_GPG_KEY=${GIT_GPG_KEY}"
     depends_on:
       # - ros-master
       - yarp-server
     volumes:
+      # X11 Forwarding
       - "${XSOCK}:${XSOCK}:rw"
       - "${XAUTH}:${XAUTH}:rw"
+      # Persistent folders
       - "${ATOM_CONF}:/home/${USERNAME}/.atom:rw"
-      - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:ro"
+      - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
+      # GPG commit signing
+      # - "/dev/console:/dev/console:rw"
     ports:
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}"
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}/udp"
+    # -i
+    # stdin_open: true
+    # -t
+    # tty: true
     command: su -c 'atom -f' ${USERNAME}
 
   gitkraken:
@@ -73,5 +91,5 @@ services:
       - "${GITKRAKEN_CONF}:/home/${USERNAME}/.gitkraken:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       # Waiting gitkraken GPG signing support
-      # - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:ro"
+      # - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
     command: su -c "gitkraken" ${USERNAME}
