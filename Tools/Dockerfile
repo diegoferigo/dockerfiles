@@ -8,6 +8,7 @@ RUN apt-get update &&\
         git \
         cmake \
         cmake-curses-gui \
+        ninja-build \
         llvm \
         clang \
         libclang-dev \
@@ -37,7 +38,9 @@ RUN apt-get update &&\
         dbus-x11 \
         tree \
         bash-completion \
-        libgnome-keyring0 &&\
+        libgnome-keyring0 \
+        gnupg2 \
+        &&\
     rm -rf /var/lib/apt/lists/*
 
 # Editor (Atom + plugins)
