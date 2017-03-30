@@ -65,7 +65,7 @@ bind '"\e\e[D": backward-word'
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Aliases
-alias cmake='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias cmakeiit='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}'
 
 function mkdircd() {
@@ -85,7 +85,10 @@ function cm() {
 		mkdir build
 		cd build  || return 1
 		# Execute cmake. You can pass additional cmake flags and they'll be included
-		cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 "$@" ..
+		cmake .. \
+		      --warn-uninitialized \
+			  -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+			  "$@"
 		# Copy the compilation database to the project's root (required by linter-clang).
 		# autocomplete-clang instead needs the file to be in the build/ directory
 		cd ..
