@@ -67,6 +67,12 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # Aliases
 alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias cmakeiit='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}'
+if [ -e $(which pygmentize) ] ; then
+	alias ccat="pygmentize -g"
+	alias lesc='LESS="-R" LESSOPEN="|pygmentize -g %s" less'
+	export LESS='-R'
+	export LESSOPEN='|pygmentize -g %s'
+fi
 
 function mkdircd() {
 	if [ ! -d  $1 ] ; then

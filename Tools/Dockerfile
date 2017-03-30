@@ -40,6 +40,7 @@ RUN apt-get update &&\
         bash-completion \
         libgnome-keyring0 \
         gnupg2 \
+        python-pygments \
         &&\
     rm -rf /var/lib/apt/lists/*
 
