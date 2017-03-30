@@ -2,11 +2,15 @@ build
 build-make
 build-cmake
 busy
+busy-signal
+intentions
 linter
+linter-ui-default
 linter-clang
 linter-shellcheck
 linter-js-yaml
 linter-markdown
+auto-detect-indentation
 autocomplete-clang
 autocomplete-cmake
 autocomplete-xml
@@ -27,4 +31,5 @@ clang-format
 docblockr
 project-manager
 simple-drag-drop-text
+switch-header-source
 file-icons
