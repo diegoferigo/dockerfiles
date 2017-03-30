@@ -75,6 +75,17 @@ function mkdircd() {
 	fi
 }
 
+# cd and ls in one
+function cl() {
+	dir=$1
+	if [[ -d "$dir" ]] ; then
+		cd "$dir"
+		ls
+	else
+		echo "cl: '$dir': Directory not found"
+	fi
+}
+
 function cm() {
 	if [ -e CMakeLists.txt ] ; then
 		# If build/ exists, remove it
