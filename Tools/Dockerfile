@@ -59,12 +59,13 @@ RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /v${GITKRAKEN_VER}.deb &&\
     rm /v${GITKRAKEN_VER}.deb
 # TODO: check optional dependencies
+ENV GCC_JOBS=4
 RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
     cd rtags &&\
     mkdir build &&\
     cd build &&\
     cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. &&\
-    make &&\
+    make -j ${GCC_JOBS} &&\
     make install &&\
     rm -r /rtags
 
