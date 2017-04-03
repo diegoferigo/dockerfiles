@@ -110,7 +110,12 @@ function cm() {
 		# autocomplete-clang instead needs the file to be in the build/ directory
 		cd ..
 		if [ -e build/compile_commands.json ] ; then
-			cp build/compile_commands.json .
+			# Sometimes CMake generates -isystem and not -I
+			# Atom Plugins don't recognize the former
+			sed -e 's:-isystem :-I:g' build/compile_commands.json > build/compile_commands_temp.json
+			# Move the database in the root's dir
+			cp build/compile_commands_temp.json compile_commands.json
+			rm build/compile_commands_temp.json
 		else
 			echo "File compile_commands.json not found"
 		fi
