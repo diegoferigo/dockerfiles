@@ -167,12 +167,26 @@ function compiler.set() {
 		return 1
 	fi
 }
+
 function compiler.get() {
 	if [[ "$CC" = "gcc" && "$CXX" = "g++" ]] ; then
 		echo "The active compiler is: gcc"
+		return 1
 	elif [[ "$CC" = "clang" && "$CXX" = "clang++" ]] ; then
 		echo "The active compiler is: clang"
+		return 2
 	else
 		echo "The compiler environment variables aren't set"
+		return 2
 	fi
+}
+
+function compiler.switch() {
+	# echo compiler.get
+	compiler.get
+    case $? in
+    	1) echo "Switching to: clang" ; compiler.set clang ;;
+    	2) echo "Switching to: gcc"   ;  compiler.set gcc  ;;
+    	*) echo "Compiler not set. Setting gcc." ; compiler.set gcc ;;
+    esac
 }
