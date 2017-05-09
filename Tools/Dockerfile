@@ -54,7 +54,7 @@ RUN add-apt-repository -y ppa:webupd8team/atom &&\
     rm -rf /var/lib/apt/lists/*
 
 # Packages with no ppa
-ARG GITKRAKEN_VER=2.2.1
+ARG GITKRAKEN_VER=2.5.0
 RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /v${GITKRAKEN_VER}.deb &&\
     rm /v${GITKRAKEN_VER}.deb

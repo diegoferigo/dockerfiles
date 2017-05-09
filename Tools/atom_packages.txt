@@ -33,3 +33,5 @@ project-manager
 simple-drag-drop-text
 switch-header-source
 file-icons
+sync-settings
+disable-mru-tabbing
