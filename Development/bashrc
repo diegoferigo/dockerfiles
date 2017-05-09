@@ -92,30 +92,28 @@ function cl() {
 	fi
 }
 
-function cm() {
+# Configure a CMake project while performing additional operations on files used by the
+# the development toolchain. This function accepts `cmake` or `ccmake` as input argument.
+function cm_template() {
 	if [ -e CMakeLists.txt ] ; then
 		# If build/ exists, remove it
-		if [ -d build/ ] ; then
+		if [[ -d build/ && $1 != "ccmake" ]] ; then
 			rm -r build/
+			mkdir build
 		fi
-		# Create an empty build dir and cd inside
-		mkdir build
 		cd build  || return 1
-		# Execute cmake. You can pass additional cmake flags and they'll be included
-		cmake .. \
-		      --warn-uninitialized \
-			  -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
-			  "$@"
+		# Execute cmake or ccmake. You can pass additional cmake flags and they'll be included
+		BINARY=$1
+		shift 1
+		$BINARY .. \
+		        --warn-uninitialized \
+		        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+		        "$@"
 		# Copy the compilation database to the project's root (required by linter-clang).
 		# autocomplete-clang instead needs the file to be in the build/ directory
 		cd ..
 		if [ -e build/compile_commands.json ] ; then
-			# Sometimes CMake generates -isystem and not -I
-			# Atom Plugins don't recognize the former
-			sed -e 's:-isystem :-I:g' build/compile_commands.json > build/compile_commands_temp.json
-			# Move the database in the root's dir
-			cp build/compile_commands_temp.json compile_commands.json
-			rm build/compile_commands_temp.json
+			cp build/compile_commands.json compile_commands.json
 		else
 			echo "File compile_commands.json not found"
 		fi
@@ -132,27 +130,52 @@ function cm() {
 	fi
 }
 
-# Custom execution of cmake + make
-function cmm() {
-	cm "$@"
+# Custom execution of c(c)make + make
+function cmm_template() {
+	cm_template "$@"
 	cd build || return 1
 	# Build the sources
 	make -j ${GCC_JOBS}
 	cd ..
 }
 
-# Custom execution of cmake + make + make install
-function cmi() {
-	cmm "$@"
+# Custom execution of c(c)make + make + make install
+function cmi_template() {
+	cmm_template "$@"
 	cd build || return 1
 	# Install the sources
 	make install
 	cd ..
 }
 
+# Use the _template function with `cmake`
+function cm() {
+	cm_template cmake "$@"
+}
+function cmm() {
+	cmm_template cmake "$@"
+}
+function cmi() {
+	cmi_template cmake "$@"
+}
+
+# Use the _template function with `ccmake`
+function ccm() {
+	cm_template ccmake "$@"
+}
+function ccmm() {
+	cmm_template ccmake "$@"
+}
+function ccmi() {
+	cmi_template ccmake "$@"
+}
+
 # Custom execution of cmake + make + make install into ${IIT_DIR}
 function cmiit() {
-	cmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}
+	cmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} "$@"
+}
+function ccmiit() {
+	ccmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} "$@"
 }
 
 # Function to switch gcc/clang compiler
