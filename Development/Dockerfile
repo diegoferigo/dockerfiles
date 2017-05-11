@@ -74,6 +74,7 @@ RUN cd ${IIT_SOURCES}/yarp &&\
           /etc/bash_completion.d/yarp_completion
 ENV YARP_DIR=${IIT_INSTALL}
 ENV YARP_DATA_DIRS=${IIT_INSTALL}/share/yarp
+ENV YARP_COLORED_OUTPUT=1
 RUN yarp check
 EXPOSE 10000/tcp
 

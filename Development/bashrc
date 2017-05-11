@@ -1,8 +1,8 @@
 # Colors, colors, colors
 if [ $UID -ne 0 ]; then
-	PS1='${debian_chroot:+($debian_chroot)}\[\e[32;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]\[\033[00;32m\]$(__git_ps1 " (%s)")\e[0m\]$ '
+	PS1='${debian_chroot:+($debian_chroot)}\[\e[36;1m\]\u\[\e[0m\]@\H:\[\e[30;1m\]\w\[\e[0m\]\[\e[00;36m\]$(__git_ps1 " (%s)")\[\e[36;1m\]>\[\e[0m\]\[\e[1m\] '
 else
-	PS1='${debian_chroot:+($debian_chroot)}\[\e[31;1m\]\u\[\e[0m\]@\H:\[\033[01;34m\]\w\e[0m\]# '
+	PS1='${debian_chroot:+($debian_chroot)}\[\e[31;1m\]\u\[\e[0m\]@\H:\[\e[30;1m\]\w\[\e[31;1m\]#\[\e[0m\]\[\e[1m\] '
 fi
 
 # After changing user, cd inside $HOME. Use $(cd -) to get back to the previous folder
@@ -65,10 +65,12 @@ bind '"\e\e[D": backward-word'
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Aliases
+NANO_FLAGS="-w -S -i -m -$"
+alias nano='nano $NANO_FLAGS'
+alias nanos='nano $NANO_FLAGS -Y sh'
 alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
-alias cmakeiit='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL}'
 if [ -e $(which pygmentize) ] ; then
-	alias ccat="pygmentize -g"
+	alias ccat='pygmentize -g'
 	alias lesc='LESS="-R" LESSOPEN="|pygmentize -g %s" less'
 	export LESS='-R'
 	export LESSOPEN='|pygmentize -g %s'
