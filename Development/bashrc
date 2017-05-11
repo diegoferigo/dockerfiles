@@ -69,11 +69,15 @@ NANO_FLAGS="-w -S -i -m -$"
 alias nano='nano $NANO_FLAGS'
 alias nanos='nano $NANO_FLAGS -Y sh'
 alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+alias valgrind-xml='valgrind --xml=yes --xml-file=/tmp/valgrind.log'
 if [ -e $(which pygmentize) ] ; then
 	alias ccat='pygmentize -g'
 	alias lesc='LESS="-R" LESSOPEN="|pygmentize -g %s" less'
 	export LESS='-R'
 	export LESSOPEN='|pygmentize -g %s'
+fi
+if [ -e $(which colour-valgrind) ] ; then
+    alias valgrind='colour-valgrind'
 fi
 
 function mkdircd() {

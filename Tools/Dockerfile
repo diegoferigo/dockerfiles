@@ -14,6 +14,7 @@ RUN apt-get update &&\
         libclang-dev \
         gdb \
         valgrind \
+        valkyrie \
         ccache \
         doxygen &&\
     rm -rf /var/lib/apt/lists/*
@@ -40,9 +41,11 @@ RUN apt-get update &&\
         bash-completion \
         libgnome-keyring0 \
         gnupg2 \
+        python-pip \
         python-pygments \
         &&\
     rm -rf /var/lib/apt/lists/*
+RUN pip install colour-valgrind
 
 # Editor (Atom + plugins)
 # In the future, check if libxss1 will become an atom package dependency
