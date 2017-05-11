@@ -44,8 +44,10 @@ ENV PATH=${IIT_PATH}:${PATH}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use cache for steps above
-ARG IIT_DOCKER_SOURCES="v1"
+ARG IIT_DOCKER_SOURCES="11/05/2017"
 
+# Build Variables
+ARG SOURCES_BUILD_TYPE=Debug
 # Download all sources with git
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/yarp.git &&\
@@ -62,7 +64,7 @@ ENV GCC_JOBS=4
 # Build all sources
 RUN cd ${IIT_SOURCES}/yarp &&\
     mkdir build && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DCREATE_GUIS=ON \
           -DCREATE_LIB_MATH=ON \
@@ -77,7 +79,7 @@ EXPOSE 10000/tcp
 
 RUN cd ${IIT_SOURCES}/icub-main &&\
     mkdir build && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DENABLE_icubmod_cartesiancontrollerserver=ON \
           -DENABLE_icubmod_cartesiancontrollerclient=ON \
@@ -95,7 +97,7 @@ ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICU
 
 RUN cd ${IIT_SOURCES}/robot-testing &&\
     mkdir build && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DENABLE_MIDDLEWARE_PLUGINS=ON \
           .. &&\
@@ -109,7 +111,8 @@ RUN cd ${IIT_SOURCES}/ycm &&\
 
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     mkdir build && cd build &&\
-    cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
@@ -117,7 +120,8 @@ ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTAL
 
 RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
     mkdir build && cd build &&\
-    cmake -DCODYCO_USES_GAZEBO:BOOL=ON \
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCODYCO_USES_GAZEBO:BOOL=ON \
           -DNON_INTERACTIVE_BUILD=ON \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
