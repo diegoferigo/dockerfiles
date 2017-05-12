@@ -218,4 +218,19 @@ function compiler.switch() {
     	2) echo "Switching to: gcc"   ;  compiler.set gcc  ;;
     	*) echo "Compiler not set. Setting gcc." ; compiler.set gcc ;;
     esac
+
+# Since the codyco-superbuild is not installed, it could be useful having the possibility
+# of storing a second tree of sources somewhere else and configure the environment to find it
+# instead of the original one
+function setlocalcodyco () {
+	if [[ ! -n "$1" || ! -e "$1" ]] ; then
+		echo "Folder not found: $1"
+	elif [[ ! -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
+		echo "The variable CODYCO_SUPERBUILD_ROOT is not set"
+	else
+		readarray CODYCO_ENV_VARS < <(env | grep ${CODYCO_SUPERBUILD_ROOT} | sed "s|${CODYCO_SUPERBUILD_ROOT}|${1%/}|g")
+		for ENV_VAR in ${CODYCO_ENV_VARS[*]} ; do
+			export $ENV_VAR
+		done
+	fi
 }

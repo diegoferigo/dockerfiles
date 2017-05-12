@@ -35,7 +35,7 @@ RUN apt-get update &&\
 # Install YARP, iCub and friends from sources
 ENV IIT_DIR=/iit
 ENV IIT_INSTALL=${IIT_DIR}/local
-ARG IIT_SOURCES=${IIT_DIR}/sources
+ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
 ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${IIT_BIN}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${IIT_INSTALL}/lib/
@@ -48,6 +48,7 @@ ARG IIT_DOCKER_SOURCES="11/05/2017"
 
 # Build Variables
 ARG SOURCES_BUILD_TYPE=Debug
+
 # Download all sources with git
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/yarp.git &&\
@@ -127,7 +128,7 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS}
-ARG CODYCO_SUPERBUILD_ROOT=${IIT_SOURCES}/codyco-superbuild
+ENV CODYCO_SUPERBUILD_ROOT=${IIT_SOURCES}/codyco-superbuild
 ARG CODYCO_SUPERBUILD_INSTALL=${CODYCO_SUPERBUILD_ROOT}/build/install
 ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${CODYCO_SUPERBUILD_ROOT}/build/install/bin
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/lib
