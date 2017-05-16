@@ -117,7 +117,7 @@ function cl() {
 		cd "$dir"
 		ls
 	else
-		echo "cl: '$dir': Directory not found"
+		err "cl: '$dir': Directory not found"
 	fi
 }
 
@@ -144,11 +144,11 @@ function cm_template() {
 		if [ -e build/compile_commands.json ] ; then
 			cp build/compile_commands.json compile_commands.json
 		else
-			echo "File compile_commands.json not found"
+			err "File compile_commands.json not found"
 		fi
 		# If rmd is not running, execute it
 		if [ ! "$(ps ax | tr -s " " | cut -d " " -f 6 | grep rdm)" = "rdm" ] ; then
-			echo "-- rdm is not running. Spawning a process"
+			msg "rdm is not running. Spawning a process"
 			rdm --daemon
 			sleep 1
 		fi
@@ -215,20 +215,20 @@ function compiler.set() {
 			clang) export CC="clang" && export CXX="clang++" ;;
 		esac
 	else
-		echo "$1: only gcc and clang are supported compilers"
+		err "$1: only gcc and clang are supported compilers"
 		return 1
 	fi
 }
 
 function compiler.get() {
 	if [[ "$CC" = "gcc" && "$CXX" = "g++" ]] ; then
-		echo "The active compiler is: gcc"
+		msg "The active compiler is: gcc"
 		return 1
 	elif [[ "$CC" = "clang" && "$CXX" = "clang++" ]] ; then
-		echo "The active compiler is: clang"
+		msg "The active compiler is: clang"
 		return 2
 	else
-		echo "The compiler environment variables aren't set"
+		err "The compiler environment variables aren't set"
 		return 2
 	fi
 }
@@ -236,9 +236,9 @@ function compiler.get() {
 function compiler.switch() {
 	compiler.get
 	case $? in
-		1) echo "Switching to: clang" ; compiler.set clang ;;
-		2) echo "Switching to: gcc"   ;  compiler.set gcc  ;;
-		*) echo "Compiler not set. Setting gcc." ; compiler.set gcc ;;
+		1) msg "Switching to: clang" ; compiler.set clang ;;
+		2) msg "Switching to: gcc"   ;  compiler.set gcc  ;;
+		*) err "Compiler not set. Setting gcc." ; compiler.set gcc ;;
 	esac
 }
 
@@ -247,9 +247,9 @@ function compiler.switch() {
 # instead of the original one
 function setlocalcodyco () {
 	if [[ ! -n "$1" || ! -e "$1" ]] ; then
-		echo "Folder not found: $1"
+		err "Folder not found: $1"
 	elif [[ ! -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
-		echo "The variable CODYCO_SUPERBUILD_ROOT is not set"
+		err "The variable CODYCO_SUPERBUILD_ROOT is not set"
 	else
 		readarray CODYCO_ENV_VARS < <(env | grep ${CODYCO_SUPERBUILD_ROOT} | sed "s|${CODYCO_SUPERBUILD_ROOT}|${1%/}|g")
 		for ENV_VAR in ${CODYCO_ENV_VARS[*]} ; do
