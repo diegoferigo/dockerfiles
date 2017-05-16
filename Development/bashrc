@@ -8,24 +8,14 @@ fi
 # After changing user, cd inside $HOME. Use $(cd -) to get back to the previous folder
 cd $HOME || return 1
 
+# Configuration of the bash environment
+# =====================================
+
 # Reset PS1 color before command's output
 trap 'echo -ne "\e[0m"' DEBUG
 
-# Update the PATH
-PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
-
-# Load the ROS environment
-# shellcheck source=/opt/ros/$ROS_DISTRO/setup.bash
-source "/opt/ros/$ROS_DISTRO/setup.bash"
-
-# Load the gazebo environment
-source /usr/share/gazebo/setup.sh
-
 # Disable echo ^C when Ctrl+C is pressed
 stty -echoctl
-
-# Set the default editor
-export EDITOR="nano"
 
 # Avoid using cd to change directory. Simply: ~# /etc
 shopt -s autocd
@@ -61,10 +51,28 @@ bind '"\e[5D": backward-word'
 bind '"\e\e[C": forward-word'
 bind '"\e\e[D": backward-word'
 
+# Configuration of frameworks and tools
+# =====================================
+
 # Explicitly enable gcc colored output
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# Set the default editor
+export EDITOR="nano"
+
+# Load the ROS environment
+# shellcheck source=/opt/ros/$ROS_DISTRO/setup.bash
+source "/opt/ros/$ROS_DISTRO/setup.bash"
+
+# Load the gazebo environment
+source /usr/share/gazebo/setup.sh
+
+# Enable ccache for the user created during runtime
+PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
+
 # Aliases
+# =======
+
 NANO_FLAGS="-w -S -i -m -$"
 alias nano='nano $NANO_FLAGS'
 alias nanos='nano $NANO_FLAGS -Y sh'
@@ -79,6 +87,21 @@ fi
 if [ -e $(which colour-valgrind) ] ; then
     alias valgrind='colour-valgrind'
 fi
+
+# Utility functions
+# =================
+
+msg() {
+	echo -e "$BGreen==>$Color_Off $1"
+}
+
+msg2() {
+	echo -e "  $BBlue->$Color_Off $1"
+}
+
+err() {
+	echo -e "$BRed==>$Color_Off $1"
+}
 
 function mkdircd() {
 	if [ ! -d  $1 ] ; then
@@ -211,13 +234,13 @@ function compiler.get() {
 }
 
 function compiler.switch() {
-	# echo compiler.get
 	compiler.get
-    case $? in
-    	1) echo "Switching to: clang" ; compiler.set clang ;;
-    	2) echo "Switching to: gcc"   ;  compiler.set gcc  ;;
-    	*) echo "Compiler not set. Setting gcc." ; compiler.set gcc ;;
-    esac
+	case $? in
+		1) echo "Switching to: clang" ; compiler.set clang ;;
+		2) echo "Switching to: gcc"   ;  compiler.set gcc  ;;
+		*) echo "Compiler not set. Setting gcc." ; compiler.set gcc ;;
+	esac
+}
 
 # Since the codyco-superbuild is not installed, it could be useful having the possibility
 # of storing a second tree of sources somewhere else and configure the environment to find it

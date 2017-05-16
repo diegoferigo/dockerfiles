@@ -11,6 +11,12 @@ source /usr/sbin/entrypoint.sh
 
 # Setup the custom bashrc
 echo "Including an additional bashrc configuration"
+# -colors
+cp /usr/etc/skel/bashrc-colors /home/$USERNAME/.bashrc-colors
+chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-colors
+echo "source /home/$USERNAME/.bashrc-colors" >> /home/${USERNAME}/.bashrc
+echo "source /home/$USERNAME/.bashrc-colors" >> /root/.bashrc
+# -dev
 cp /usr/etc/skel/bashrc-dev /home/$USERNAME/.bashrc-dev
 chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-dev
 echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
