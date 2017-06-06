@@ -122,6 +122,32 @@ function cl() {
 	fi
 }
 
+# Start and configure yarp
+function yarpinit() {
+    if [[ -n "${YARP_NAME_SPACE}" || -n "$1" ]] ; then
+        if [ -n "${YARP_NAME_SPACE}" ] ; then
+            Y_NAMESPACE=${YARP_NAME_SPACE}
+        else
+            Y_NAMESPACE="$1"
+        fi
+        eval "yarp namespace ${Y_NAMESPACE}"
+        # If no yarp server is running, spawn a new instance
+        yarp detect &>/dev/null
+        if [ $? -ne 0 ] ; then
+            msg "YARP is not running"
+            msg2 "Spawning a new yarpserver"
+            yarpserver --write &
+            sleep 2
+        else
+            msg "YARP is already running"
+        fi
+        msg2 "Storing the configuration of the server"
+        yarp detect --write &>/dev/null || return 1
+    else
+        err "No yarp namespace is set. Export a YARP_NAME_SPACE env variable or pass it as $1"
+    fi
+}
+
 # Configure a CMake project while performing additional operations on files used by the
 # the development toolchain. This function accepts `cmake` or `ccmake` as input argument.
 function cm_template() {
