@@ -57,7 +57,11 @@ if [ -d ${IIT_DIR} ] ; then
 	fi
 fi
 
-# Configure YARP namespace and connect to the server
+if [ -d "/home/$USERNAME/.ccache" ] ; then
+	chown -R $USERNAME:$USERNAME /home/$USERNAME/.ccache
+fi
+
+# Configure YARP namespace
 if [ -n "${YARP_NAME_SPACE}" ] ; then
 	su -c 'eval "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE}"' $USERNAME
 fi

@@ -62,6 +62,7 @@ services:
       # Persistent folders
       - "${ATOM_CONF}:/home/${USERNAME}/.atom:rw"
       - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
+      - "${CCACHE_DIR}:/home/${USERNAME}/.ccache"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
       # GPG commit signing
