@@ -260,9 +260,14 @@ function compiler.switch() {
 # instead of the original one
 function setlocalcodyco () {
 	if [[ ! -n "$1" || ! -e "$1" ]] ; then
-		err "Folder not found: $1"
+		err "Folder not found $1"
+		if [[ -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
+			msg2 "The current CODYCO_SUPERBUILD_ROOT is $CODYCO_SUPERBUILD_ROOT"
+		fi
+		return 1
 	elif [[ ! -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
 		err "The variable CODYCO_SUPERBUILD_ROOT is not set"
+		return 1
 	else
 		readarray CODYCO_ENV_VARS < <(env | grep ${CODYCO_SUPERBUILD_ROOT} | sed "s|${CODYCO_SUPERBUILD_ROOT}|${1%/}|g")
 		for ENV_VAR in ${CODYCO_ENV_VARS[*]} ; do
