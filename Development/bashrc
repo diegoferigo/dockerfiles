@@ -125,39 +125,51 @@ function cl() {
 # Configure a CMake project while performing additional operations on files used by the
 # the development toolchain. This function accepts `cmake` or `ccmake` as input argument.
 function cm_template() {
+	msg "Starting the build process"
 	if [ -e CMakeLists.txt ] ; then
-		# If build/ exists, remove it
-		if [[ -d build/ && $1 != "ccmake" ]] ; then
-			rm -r build/
-			mkdir build
+		msg2 "CMakeLists.txt found"
+		# If build/ exists, use cmake ., otherwise cmake ..
+		if [[ -d build/ ]] ; then
+			msg2 "Using CMake cache"
+			CMAKE_FOLDER="."
+		else
+			msg2 "Creating new build folder"
+			CMAKE_FOLDER=".."
+			mkdir build/
 		fi
 		cd build  || return 1
 		# Execute cmake or ccmake. You can pass additional cmake flags and they'll be included
 		BINARY=$1
 		shift 1
-		$BINARY .. \
-		        --warn-uninitialized \
-		        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
-		        "$@"
+		${BINARY} ${CMAKE_FOLDER} \
+		          --warn-uninitialized \
+		          -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+		          "$@"
 		# Copy the compilation database to the project's root (required by linter-clang).
 		# autocomplete-clang instead needs the file to be in the build/ directory
 		cd ..
 		if [ -e build/compile_commands.json ] ; then
+			msg2 "Generating the compile_commands.json file"
 			cp build/compile_commands.json compile_commands.json
 		else
 			err "File compile_commands.json not found"
 		fi
 		# If rmd is not running, execute it
 		if [ ! "$(ps ax | tr -s " " | cut -d " " -f 6 | grep rdm)" = "rdm" ] ; then
-			msg "rdm is not running. Spawning a process"
+			msg2 "rdm is not running. Spawning a process"
 			rdm --daemon
 			sleep 1
 		fi
 		# Send to rdm the compilation database
 		if [ -e build/compile_commands.json ] ; then
+			msg2 "Forwarding the new compilation database to rdm"
 			rc -J >/dev/null
 		fi
+	else
+		err "CMakeLists.txt not found in this folder"
+		return 1
 	fi
+	msg "Done"
 }
 
 # Custom execution of c(c)make + make
