@@ -78,6 +78,7 @@ alias nano='nano $NANO_FLAGS'
 alias nanos='nano $NANO_FLAGS -Y sh'
 alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias valgrind-xml='valgrind --xml=yes --xml-file=/tmp/valgrind.log'
+alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 if [ -e $(which pygmentize) ] ; then
 	alias ccat='pygmentize -g'
 	alias lesc='LESS="-R" LESSOPEN="|pygmentize -g %s" less'
