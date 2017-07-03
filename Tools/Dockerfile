@@ -43,6 +43,7 @@ RUN apt-get update &&\
         gnupg2 \
         python-pip \
         python-pygments \
+        colordiff \
         octave \
         &&\
     rm -rf /var/lib/apt/lists/*
@@ -58,7 +59,7 @@ RUN add-apt-repository -y ppa:webupd8team/atom &&\
     rm -rf /var/lib/apt/lists/*
 
 # Packages with no ppa
-ARG GITKRAKEN_VER=2.5.0
+ARG GITKRAKEN_VER=2.6.0
 RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /v${GITKRAKEN_VER}.deb &&\
     rm /v${GITKRAKEN_VER}.deb

@@ -77,7 +77,6 @@ NANO_FLAGS="-w -S -i -m -$"
 alias nano='nano $NANO_FLAGS'
 alias nanos='nano $NANO_FLAGS -Y sh'
 alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
-alias valgrind-xml='valgrind --xml=yes --xml-file=/tmp/valgrind.log'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 if [ -e $(which pygmentize) ] ; then
 	alias ccat='pygmentize -g'
@@ -85,8 +84,14 @@ if [ -e $(which pygmentize) ] ; then
 	export LESS='-R'
 	export LESSOPEN='|pygmentize -g %s'
 fi
-if [ -e $(which colour-valgrind) ] ; then
-    alias valgrind='colour-valgrind'
+if [ -e $(which valgrind) ] ; then
+	alias valgrind-xml='valgrind --xml=yes --xml-file=/tmp/valgrind.log'
+	if [ -e $(which colour-valgrind) ] ; then
+		alias valgrind='colour-valgrind'
+	fi
+fi
+if [ -e $(which colordiff) ] ; then
+	alias diff='colordiff'
 fi
 if [ -e $(which octave) ] ; then
 	alias octave='octave -p /usr/local/octave/ -p /usr/local/octave/+yarp/'
@@ -128,28 +133,28 @@ function cl() {
 
 # Start and configure yarp
 function yarpinit() {
-    if [[ -n "${YARP_NAME_SPACE}" || -n "$1" ]] ; then
-        if [ -n "${YARP_NAME_SPACE}" ] ; then
-            Y_NAMESPACE=${YARP_NAME_SPACE}
-        else
-            Y_NAMESPACE="$1"
-        fi
-        eval "yarp namespace ${Y_NAMESPACE}"
-        # If no yarp server is running, spawn a new instance
-        yarp detect &>/dev/null
-        if [ $? -ne 0 ] ; then
-            msg "YARP is not running"
-            msg2 "Spawning a new yarpserver"
-            yarpserver --write &
-            sleep 2
-        else
-            msg "YARP is already running"
-        fi
-        msg2 "Storing the configuration of the server"
-        yarp detect --write &>/dev/null || return 1
-    else
-        err "No yarp namespace is set. Export a YARP_NAME_SPACE env variable or pass it as $1"
-    fi
+	if [[ -n "${YARP_NAME_SPACE}" || -n "$1" ]] ; then
+		if [ -n "${YARP_NAME_SPACE}" ] ; then
+			Y_NAMESPACE=${YARP_NAME_SPACE}
+		else
+			Y_NAMESPACE="$1"
+		fi
+		eval "yarp namespace ${Y_NAMESPACE}"
+		# If no yarp server is running, spawn a new instance
+		yarp detect &>/dev/null
+		if [ $? -ne 0 ] ; then
+			msg "YARP is not running"
+			msg2 "Spawning a new yarpserver"
+			yarpserver --write &
+			sleep 2
+		else
+			msg "YARP is already running"
+		fi
+		msg2 "Storing the configuration of the server"
+		yarp detect --write &>/dev/null || return 1
+	else
+		err "No yarp namespace is set. Export a YARP_NAME_SPACE env variable or pass it as $1"
+	fi
 }
 
 # Configure a CMake project while performing additional operations on files used by the

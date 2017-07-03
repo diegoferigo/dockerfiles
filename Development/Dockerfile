@@ -30,6 +30,7 @@ RUN apt-get update &&\
         libgsl-dev \
         libedit-dev \
         libace-dev \
+        coinor-libipopt-dev \
         liboctave-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
