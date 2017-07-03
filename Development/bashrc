@@ -88,6 +88,10 @@ fi
 if [ -e $(which colour-valgrind) ] ; then
     alias valgrind='colour-valgrind'
 fi
+if [ -e $(which octave) ] ; then
+	alias octave='octave -p /usr/local/octave/ -p /usr/local/octave/+yarp/'
+fi
+
 
 # Utility functions
 # =================

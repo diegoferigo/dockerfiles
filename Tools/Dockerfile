@@ -43,6 +43,7 @@ RUN apt-get update &&\
         gnupg2 \
         python-pip \
         python-pygments \
+        octave \
         &&\
     rm -rf /var/lib/apt/lists/*
 RUN pip install colour-valgrind
