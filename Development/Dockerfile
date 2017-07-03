@@ -67,8 +67,8 @@ ENV PATH=${IIT_PATH}:${PATH}
 
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
-# Use cache for steps above
-ARG IIT_DOCKER_SOURCES="29/06/2017"
+# Use docker cache for steps above
+ARG IIT_DOCKER_SOURCES="20170703"
 
 # Build Variables
 ARG SOURCES_GIT_BRANCH=devel
@@ -83,7 +83,8 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
     git clone https://github.com/robotology/gazebo-yarp-plugins.git &&\
     git clone https://github.com/robotology/codyco-superbuild.git &&\
-    git clone https://github.com/robotology-playground/yarp-matlab-bindings.git
+    git clone https://github.com/robotology-playground/yarp-matlab-bindings.git &&\
+    git clone https://github.com/robotology/idyntree.git
 
 # Build all sources
 RUN cd ${IIT_SOURCES}/yarp &&\
@@ -148,6 +149,39 @@ RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
 
+RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
+    mkdir build && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DYARP_USES_OCTAVE:BOOL=ON \
+          -DYARP_GENERATE_MATLAB=ON \
+          -DYARP_SOURCE_DIR=${IIT_SOURCES}/yarp \
+          -DYARP_NO_DEPRECATED_WARNINGS:BOOL=ON \
+          -DYCM_USE_DEPRECATED:BOOL=FALSE \
+          -DYARP_INSTALL_MATLAB_LIBDIR=matlab \
+          -DYARP_INSTALL_MATLAB_MFILESDIR=matlab \
+          .. &&\
+    make -j ${GCC_JOBS} install
+
+RUN apt-get update &&\
+    apt-get install -y \
+        liborocos-kdl-dev \
+        &&\
+    rm -rf /var/lib/apt/lists/*
+
+RUN cd ${IIT_SOURCES}/idyntree &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
+    mkdir build && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DIDYNTREE_USES_OCTAVE:BOOL=ON \
+          -DIDYNTREE_INSTALL_MATLAB_LIBDIR=matlab \
+          -DIDYNTREE_INSTALL_MATLAB_MFILESDIR=matlab \
+          -DIDYNTREE_USES_KDL:BOOL=ON \
+          .. &&\
+    make -j ${GCC_JOBS} install
+
 RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
@@ -166,15 +200,6 @@ ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${CODYCO_SUPERB
 ENV GAZEBO_RESOURCE_PATH=${GAZEBO_RESOURCE_PATH:+${GAZEBO_RESOURCE_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/share/gazebo/worlds
 ENV PATH=${IIT_PATH}:${ROOT_PATH}
 
-RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DYARP_USES_OCTAVE:BOOL=ON \
-          -DYARP_GENERATE_MATLAB=ON \
-          -DYARP_SOURCE_DIR=${IIT_SOURCES}/yarp \
-          .. &&\
-    make -j ${GCC_JOBS} install
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM 1
