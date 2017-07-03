@@ -2,7 +2,8 @@ FROM diegoferigo/tools
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Install ROS Desktop Full
-# https://github.com/osrf/docker_images/blob/master/ros/kinetic/kinetic-ros-core/Dockerfile
+# https://github.com/osrf/docker_images/blob/master/ros/
+ENV ROS_DISTRO lunar
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
         --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
 RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" \
@@ -15,12 +16,11 @@ RUN apt-get update &&\
     rm -rf /var/lib/apt/lists/*
 RUN rosdep init &&\
     rosdep update
-ENV ROS_DISTRO kinetic
 RUN apt-get update &&\
     apt-get install -y \
-        ros-kinetic-desktop-full \
-        ros-kinetic-fake-localization \
-        ros-kinetic-map-server &&\
+        ros-${ROS_DISTRO}-desktop-full &&\
+        #ros-${ROS_DISTRO}-fake-localization \
+        #ros-${ROS_DISTRO}-map-server &&\
     rm -rf /var/lib/apt/lists/*
 
 # Install libraries
