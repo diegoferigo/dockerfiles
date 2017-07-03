@@ -86,6 +86,7 @@ RUN cd ${IIT_SOURCES} &&\
 
 # Build all sources
 RUN cd ${IIT_SOURCES}/yarp &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
@@ -102,6 +103,7 @@ RUN yarp check
 EXPOSE 10000/tcp
 
 RUN cd ${IIT_SOURCES}/icub-main &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
@@ -120,6 +122,7 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
 RUN cd ${IIT_SOURCES}/robot-testing &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
@@ -128,12 +131,14 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
     make -j ${GCC_JOBS} install
 
 RUN cd ${IIT_SOURCES}/ycm &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS} install
 
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
