@@ -94,7 +94,14 @@ if [ -e $(which colordiff) ] ; then
 	alias diff='colordiff'
 fi
 if [ -e $(which octave) ] ; then
-	alias octave='octave -p /usr/local/octave/ -p /usr/local/octave/+yarp/'
+    OCTAVE_BINDINGS_ROOT="${IIT_INSTALL}/octave"
+	OCTAVE_BINDINGS_DIRS=""
+	for extra_bindings_dir in ${OCTAVE_BINDINGS_ROOT}/+* ; do
+		if [ -d ${extra_bindings_dir} ] ; then
+			OCTAVE_BINDINGS_DIRS+="-p ${extra_bindings_dir} "
+		fi
+	done
+	alias octave='octave -p ${OCTAVE_BINDINGS_ROOT} ${OCTAVE_BINDINGS_DIRS}'
 fi
 
 
