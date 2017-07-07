@@ -4,6 +4,16 @@ MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 # Install ROS Desktop Full
 # ========================
 
+# Get gazebo8 from the osrf repo
+RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list' &&\
+    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
+    apt-get update &&\
+    apt-get install --no-install-recommends -y \
+        gazebo8 \
+        libgazebo8-dev \
+        &&\
+    rm -rf /var/lib/apt/lists/*
+
 # https://github.com/osrf/docker_images/blob/master/ros/
 ENV ROS_DISTRO lunar
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
@@ -14,15 +24,18 @@ RUN apt-get update &&\
     apt-get install --no-install-recommends -y \
         python-rosdep \
         python-rosinstall \
-        python-vcstools &&\
+        python-vcstools \
+        &&\
     rm -rf /var/lib/apt/lists/*
 RUN rosdep init &&\
     rosdep update
 RUN apt-get update &&\
     apt-get install -y \
-        ros-${ROS_DISTRO}-desktop-full &&\
+        ros-${ROS_DISTRO}-desktop \
+        # ros-${ROS_DISTRO}-desktop-full &&\
         #ros-${ROS_DISTRO}-fake-localization \
         #ros-${ROS_DISTRO}-map-server &&\
+        &&\
     rm -rf /var/lib/apt/lists/*
 
 # Install libraries
