@@ -11,16 +11,16 @@ services:
       - ${ROS_MASTER_PORT}:${ROS_MASTER_PORT}
     command: roscore
 
-  yarp-server:
-    image: "${YARP_MASTER_IMAGE}"
-    container_name: yarp-server
-    environment:
-      - "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
-      - "USERNAME=${USERNAME}"
-    ports:
-      - "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}"
-      - "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}/udp"
-    command: sh -c 'yarp namespace ${YARP_NAME_SPACE} && yarpserver'
+  #yarp-server:
+    #image: "${YARP_MASTER_IMAGE}"
+    #container_name: yarp-server
+    #environment:
+      #- "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
+      #- "USERNAME=${USERNAME}"
+    #ports:
+      #- "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}"
+      #- "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}/udp"
+    #command: sh -c 'yarp namespace ${YARP_NAME_SPACE} && yarpserver'
 
   #
   # DEVELOPMENT CONTAINERS
@@ -52,9 +52,9 @@ services:
       #       since $(tty) is not recognized either with docker exec and inside script
       # - "GIT_USE_GPG=1"
       # - "GIT_GPG_KEY=${GIT_GPG_KEY}"
-    depends_on:
+    # depends_on:
       # - ros-master
-      - yarp-server
+      # - yarp-server
     volumes:
       # X11 Forwarding
       - "${XSOCK}:${XSOCK}:rw"
