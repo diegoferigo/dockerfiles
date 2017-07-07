@@ -55,7 +55,7 @@ RUN apt-get update &&\
 # Concurrent compilation jobs
 ENV GCC_JOBS=6
 
-# Install SWIG with Matlab support
+# Install SWIG with Matlab / Octave support
 # ... waiting its upstream merge
 RUN apt-get update &&\
     apt-get install -y \
@@ -89,6 +89,15 @@ ARG SOURCES_BUILD_TYPE=Debug
 
 # Use docker cache for steps above
 ARG IIT_DOCKER_SOURCES="20170707"
+
+# Configure the MEX provider
+# For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
+# Refer to https://github.com/diegoferigo/dockerfiles/issues/8
+ARG ROBOTOLOGY_USES_OCTAVE=ON
+ARG ROBOTOLOGY_USES_MATLAB=OFF
+ARG ROBOTOLOGY_GENERATE_MEX=OFF
+# The default is "mex" but "matlab" should become the default
+ARG ROBOTOLOGY_MATLAB_MEX_DIR="matlab"
 
 # Set the environment up
 # ----------------------
@@ -193,13 +202,15 @@ RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DYARP_USES_OCTAVE:BOOL=ON \
-          -DYARP_GENERATE_MATLAB=ON \
           -DYARP_SOURCE_DIR=${IIT_SOURCES}/yarp \
+          -DYARP_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
+          -DYARP_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DYARP_GENERATE_MATLAB:BOOL=${ROBOTOLOGY_GENERATE_MEX} \
+          -DYARP_USES_MEX_WHOLEBODYMODEL=${ROBOTOLOGY_USES_MATLAB} \
+          -DYARP_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
+          -DYARP_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DYARP_NO_DEPRECATED_WARNINGS:BOOL=ON \
           -DYCM_USE_DEPRECATED:BOOL=FALSE \
-          -DYARP_INSTALL_MATLAB_LIBDIR=matlab \
-          -DYARP_INSTALL_MATLAB_MFILESDIR=matlab \
           .. &&\
     make -j ${GCC_JOBS} install
 
@@ -215,9 +226,11 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DIDYNTREE_USES_OCTAVE:BOOL=ON \
-          -DIDYNTREE_INSTALL_MATLAB_LIBDIR=matlab \
-          -DIDYNTREE_INSTALL_MATLAB_MFILESDIR=matlab \
+          -DIDYNTREE_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
+          -DIDYNTREE_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DIDYNTREE_GENERATE_MATLAB:BOOL=${ROBOTOLOGY_GENERATE_MEX} \
+          -DIDYNTREE_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
+          -DIDYNTREE_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DIDYNTREE_USES_KDL:BOOL=ON \
           .. &&\
     make -j ${GCC_JOBS} install
@@ -226,9 +239,13 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
 RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCODYCO_USES_GAZEBO:BOOL=ON \
-          -DNON_INTERACTIVE_BUILD=ON \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DCODYCO_USES_GAZEBO:BOO:BOOLL=ON \
+          -DNON_INTERACTIVE_BUILD:BOOL=ON \
+          -DCODYCO_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
+          -DCODYCO_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DCODYCO_USES_WBI_TOOLBOX:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DCODYCO_USES_WBI_TOOLBOX_CONTROL:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DCODYCO_USES_WBI_TOOLBOX_CONTROLLERS:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           .. &&\
     make -j ${GCC_JOBS}
 

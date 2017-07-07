@@ -68,7 +68,15 @@ source "/opt/ros/$ROS_DISTRO/setup.bash"
 source /usr/share/gazebo/setup.sh
 
 # Enable ccache for the user created during runtime
-PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
+export PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
+
+# Enable matlab
+if [ -x "/home/${USERNAME}/.MATLAB/bin/matlab" ] ; then
+	export PATH=${PATH}:/home/${USERNAME}/.MATLAB/bin
+	export MATLABPATH=${CODYCO_SUPERBUILD_ROOT}/build/install/mex/:${CODYCO_SUPERBUILD_ROOT}/build/install/share/WB-Toolbox/
+	# https://github.com/robotology/codyco-superbuild/issues/141
+	alias matlab="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab"
+fi
 
 # Aliases
 # =======

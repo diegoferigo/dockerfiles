@@ -63,6 +63,8 @@ services:
       - "${ATOM_CONF}:/home/${USERNAME}/.atom:rw"
       - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
       - "${CCACHE_DIR}:/home/${USERNAME}/.ccache"
+      - "${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw"
+      - "${MATLAB_CONF}:/home/${USERNAME}/.matlab:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
       # GPG commit signing
@@ -70,6 +72,7 @@ services:
     ports:
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}"
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}/udp"
+    mac_address: ${HOST_MATLAB_MAC}
     # -i
     # stdin_open: true
     # -t
