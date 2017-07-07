@@ -64,7 +64,22 @@ RUN git clone https://github.com/jaeandersson/swig.git &&\
 # Install YARP, iCub and friends from sources
 # ===========================================
 
+# User defined variables
+# ----------------------
+
+# Environment setup of the robotology repositories
 ENV IIT_DIR=/iit
+
+# Build Variables
+ARG SOURCES_GIT_BRANCH=devel
+ARG SOURCES_BUILD_TYPE=Debug
+
+# Use docker cache for steps above
+ARG IIT_DOCKER_SOURCES="20170707"
+
+# Set the environment up
+# ----------------------
+
 ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
@@ -72,17 +87,10 @@ ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${IIT_BIN}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${IIT_INSTALL}/lib/
 ENV PATH=${IIT_PATH}:${PATH}
 
-RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
-
-# Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20170703"
-
-# Build Variables
-ARG SOURCES_GIT_BRANCH=devel
-ARG SOURCES_BUILD_TYPE=Debug
-
 # Download all sources with git
 # -----------------------------
+
+RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/yarp.git &&\
@@ -98,6 +106,7 @@ RUN cd ${IIT_SOURCES} &&\
 # Build all sources
 # -----------------
 
+# YARP
 RUN cd ${IIT_SOURCES}/yarp &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
@@ -115,6 +124,7 @@ ENV YARP_COLORED_OUTPUT=1
 RUN yarp check
 EXPOSE 10000/tcp
 
+# ICUB-MAIN
 RUN cd ${IIT_SOURCES}/icub-main &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
@@ -127,6 +137,7 @@ RUN cd ${IIT_SOURCES}/icub-main &&\
     make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
 
+# ICUB-CONTRIB-COMMON
 RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
@@ -134,6 +145,7 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
     make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
+# ROBOT-TESTING
 RUN cd ${IIT_SOURCES}/robot-testing &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
@@ -143,6 +155,7 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
+# YCM
 RUN cd ${IIT_SOURCES}/ycm &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
@@ -150,6 +163,7 @@ RUN cd ${IIT_SOURCES}/ycm &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
+# GAZEBO-YARP-PLUGINS
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
@@ -160,6 +174,7 @@ RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
 
+# YARP-MATLAB-BINDINGS
 RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
@@ -175,6 +190,7 @@ RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
+# IDYNTREE
 RUN apt-get update &&\
     apt-get install -y \
         liborocos-kdl-dev \
@@ -193,6 +209,7 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
+# CODYCO-SUPERBUILD
 RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
@@ -201,6 +218,8 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS}
+
+# Set the codyco-superbuild environment up
 ENV CODYCO_SUPERBUILD_ROOT=${IIT_SOURCES}/codyco-superbuild
 ARG CODYCO_SUPERBUILD_INSTALL=${CODYCO_SUPERBUILD_ROOT}/build/install
 ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${CODYCO_SUPERBUILD_ROOT}/build/install/bin
