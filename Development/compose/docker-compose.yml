@@ -62,6 +62,7 @@ services:
       # Persistent folders
       - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
       - "${HOST_ATOM_CONF_DIR}:/home/${USERNAME}/.atom:rw"
+      - "${HOST_YARPLOCAL_DIR}:/home/${USERNAME}/.local:rw"
       - "${HOST_CCACHE_DIR}:/home/${USERNAME}/.ccache:rw"
       - "${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw"
       - "${HOST_MATLAB_CONF_DIR}:/home/${USERNAME}/.matlab:rw"
