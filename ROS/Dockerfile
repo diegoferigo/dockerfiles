@@ -1,16 +1,12 @@
-FROM osrf/ros:kinetic-desktop-full
+FROM osrf/ros:lunar-desktop-full
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
-# Install ROS Desktop
-RUN apt-get update && apt-get install -y \
-        ros-kinetic-fake-localization \
-        ros-kinetic-map-server &&\
-    rm -rf /var/lib/apt/lists/*
-
 # Setup HW Acceleration for Intel graphic cards
-RUN apt-get update && apt-get install -y \
+RUN apt-get update &&\
+    apt-get install -y \
         libgl1-mesa-glx \
-        libgl1-mesa-dri &&\
+        libgl1-mesa-dri \
+        &&\
     rm -rf /var/lib/apt/lists/*
 
 # Some QT-Apps/Gazebo don't show controls without this

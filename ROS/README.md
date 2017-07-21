@@ -1,22 +1,26 @@
-Dockerfile for ROS Kinetic `desktop-full`, built on top of the
-`osrf/ros:kinetic-desktop-full` image.
+Dockerfile for ROS Lunar `desktop-full`, built on top of the
+[`osrf/ros:lunar-desktop-full`](https://hub.docker.com/r/osrf/ros/) image.
 
 Features:
+
 * X11 authentication for GUIs
-* Image size: 3.4GB
+* Image size: 3.2GB
 * User created during runtime
 
 ## Build the image
+
 ```
 docker build -t diegoferigo/ros .
 ```
 
 ## User configuration
+
 Several reasons could be found for having a non-root user within the container
 that matches the GID and UID of your host user.
 
 This docker image allows the creation of a runtime user, whose default UID and
 GID is 1000. To override these values and to start the container, execute:
+
 ```
 USER_UID=1000
 USER_GID=1000
@@ -30,17 +34,21 @@ docker run -i -t --rm \
 	diegoferigo/ros \
 	bash
 ```
+
 Then, create as many ttys as needed with
+
 ```
 docker exec -it ros bash
 ```
+
 The image does not contain `sudo` and the root password is not set. When the active
 user is not root, to execute commands that require admin privileges you should
 open a new tty or use `exit` on the current shell getting back to the root user.
 
 ## X11 authentication
 
-As an example, `rqt` is forwarded from within the container to the host Xserver:
+As an example, `rqt` is forwarded from within the container to the host's Xserver:
+
 ```
 XSOCK=/tmp/.X11-unix
 XAUTH=/tmp/.docker.xauth
@@ -57,16 +65,19 @@ docker run -i -t --rm \
 	diegoferigo/ros \
 	rqt
 ```
+
 If you need HW acceleration (only for Intel graphic cards), add also this device
 flag `--device=/dev/dri`.
 
 ## Resources
+
 * [Docker and ROS][0]
 * X11 Authentication: [stackoverflow][1], [ROS Wiki][2]
 * Runtime user: [docker-browser-box][6]
 * [Hardware Acceleration][3]
 
 ## TODO
+
 * Setup a ROS [docker-compose][4] system (see also [docker hub][5] - Compose)
 * Setup sudo w/o password
 
