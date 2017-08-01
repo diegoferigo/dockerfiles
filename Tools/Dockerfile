@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:rolling
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Build and development tools
@@ -16,10 +16,10 @@ RUN apt-get update &&\
         valgrind \
         valkyrie \
         ccache \
-        doxygen &&\
+        doxygen \
+        &&\
     rm -rf /var/lib/apt/lists/*
 ENV ROOT_PATH=$PATH
-ENV PATH=/usr/lib/ccache:${ROOT_PATH}
 
 # Libraries
 
@@ -46,8 +46,8 @@ RUN apt-get update &&\
         colordiff \
         octave \
         &&\
-    rm -rf /var/lib/apt/lists/*
-RUN pip install colour-valgrind
+    rm -rf /var/lib/apt/lists/* &&\
+    pip install colour-valgrind
 
 # Editor (Atom + plugins)
 # In the future, check if libxss1 will become an atom package dependency
