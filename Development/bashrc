@@ -73,9 +73,11 @@ export PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
 # Enable matlab
 if [ -x "/home/${USERNAME}/.MATLAB/bin/matlab" ] ; then
 	export PATH=${PATH}:/home/${USERNAME}/.MATLAB/bin
-	export MATLABPATH=${CODYCO_SUPERBUILD_ROOT}/build/install/mex/:${CODYCO_SUPERBUILD_ROOT}/build/install/share/WB-Toolbox/
+	export MATLABPATH=${CODYCO_SUPERBUILD_ROOT}/build/install/mex/:${CODYCO_SUPERBUILD_ROOT}/build/install/share/WB-Toolbox/:${CODYCO_SUPERBUILD_ROOT}/build/install/share/WB-Toolbox/images
 	# https://github.com/robotology/codyco-superbuild/issues/141
 	alias matlab="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab"
+	# Set the bindings up
+	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab
 fi
 
 # Aliases
@@ -102,7 +104,7 @@ if [ -e $(which colordiff) ] ; then
 	alias diff='colordiff'
 fi
 if [ -e $(which octave) ] ; then
-    OCTAVE_BINDINGS_ROOT="${IIT_INSTALL}/octave"
+	OCTAVE_BINDINGS_ROOT="${IIT_INSTALL}/octave"
 	OCTAVE_BINDINGS_DIRS=""
 	for extra_bindings_dir in ${OCTAVE_BINDINGS_ROOT}/+* ; do
 		if [ -d ${extra_bindings_dir} ] ; then
