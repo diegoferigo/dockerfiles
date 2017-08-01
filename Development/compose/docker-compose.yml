@@ -81,7 +81,7 @@ services:
     command: su -c 'atom -f' ${USERNAME}
 
   gitkraken:
-    image: "${DEVELOPMENT_IMAGE}"
+    image: "${GITKRAKEN_IMAGE}"
     container_name: gitkraken
     environment:
       - "USER_UID=${USER_UID}"
