@@ -17,8 +17,8 @@ RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb
 # https://github.com/osrf/docker_images/blob/master/ros/
 ENV ROS_DISTRO lunar
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
-        --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116
-RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" \
+                --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
+    echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
         > /etc/apt/sources.list.d/ros-latest.list
 RUN apt-get update &&\
     apt-get install --no-install-recommends -y \
@@ -262,6 +262,9 @@ ENV PATH=${IIT_PATH}:${ROOT_PATH}
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM 1
+
+# Fix the "Error opening terminal: unknown." message
+ENV TERM xterm
 
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev
