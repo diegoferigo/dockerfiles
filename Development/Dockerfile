@@ -26,8 +26,8 @@ RUN apt-get update &&\
         python-rosinstall \
         python-vcstools \
         &&\
-    rm -rf /var/lib/apt/lists/*
-RUN rosdep init &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    rosdep init &&\
     rosdep update
 RUN apt-get update &&\
     apt-get install -y \
@@ -57,14 +57,17 @@ ENV GCC_JOBS=6
 
 # Install SWIG with Matlab / Octave support
 # ... waiting its upstream merge
-RUN apt-get update &&\
+RUN \
+    # Dependencies
+    apt-get update &&\
     apt-get install -y \
         autotools-dev \
         automake \
         bison \
         &&\
-    rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/jaeandersson/swig.git &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    # Project
+    git clone https://github.com/jaeandersson/swig.git &&\
     cd swig &&\
     git checkout matlab &&\
     sh autogen.sh &&\
@@ -88,7 +91,7 @@ ARG SOURCES_GIT_BRANCH=devel
 ARG SOURCES_BUILD_TYPE=Debug
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20170707"
+ARG IIT_DOCKER_SOURCES="20170714"
 
 # Configure the MEX provider
 # For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
@@ -128,8 +131,25 @@ RUN cd ${IIT_SOURCES} &&\
 # Build all sources
 # -----------------
 
+# YCM
+RUN cd ${IIT_SOURCES}/ycm &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
+    mkdir build && cd build &&\
+    cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          .. &&\
+    make -j ${GCC_JOBS} install
+
 # YARP
-RUN cd ${IIT_SOURCES}/yarp &&\
+RUN \
+    # Dependencies
+    apt-get update &&\
+    apt-get install -y \
+        libqcustomplot-dev \
+        qtmultimedia5-dev \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    # Project
+    cd ${IIT_SOURCES}/yarp &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
@@ -177,14 +197,6 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
-# YCM
-RUN cd ${IIT_SOURCES}/ycm &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
-    cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    make -j ${GCC_JOBS} install
-
 # GAZEBO-YARP-PLUGINS
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
@@ -206,7 +218,6 @@ RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
           -DYARP_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DYARP_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           -DYARP_GENERATE_MATLAB:BOOL=${ROBOTOLOGY_GENERATE_MEX} \
-          -DYARP_USES_MEX_WHOLEBODYMODEL=${ROBOTOLOGY_USES_MATLAB} \
           -DYARP_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DYARP_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DYARP_NO_DEPRECATED_WARNINGS:BOOL=ON \
@@ -215,13 +226,15 @@ RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
     make -j ${GCC_JOBS} install
 
 # IDYNTREE
-RUN apt-get update &&\
+RUN \
+    # Dependencies
+    apt-get update &&\
     apt-get install -y \
         liborocos-kdl-dev \
         &&\
-    rm -rf /var/lib/apt/lists/*
-
-RUN cd ${IIT_SOURCES}/idyntree &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    # Project
+    cd ${IIT_SOURCES}/idyntree &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
@@ -243,6 +256,7 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
           -DCODYCO_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DCODYCO_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DCODYCO_NOT_USE_YARP_MATLAB_BINDINGS:BOOL=ON \
           .. &&\
     make -j ${GCC_JOBS}
 
