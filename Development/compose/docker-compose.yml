@@ -70,8 +70,9 @@ services:
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
       # GPG commit signing
       # - "/dev/console:/dev/console:rw"
+    devices:
       # HW Acceleration for intel cards
-      - "/dev/dri:/dev/dri:rw"
+      - "/dev/dri:/dev/dri"
     ports:
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}"
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}/udp"
@@ -99,6 +100,7 @@ services:
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       # Waiting gitkraken GPG signing support
       # - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
+    devices:
       # HW Acceleration for intel cards
-      - "/dev/dri:/dev/dri:rw"
+      - "/dev/dri:/dev/dri"
     command: su -c "gitkraken" ${USERNAME}
