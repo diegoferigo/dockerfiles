@@ -248,6 +248,66 @@ RUN \
           .. &&\
     make -j ${GCC_JOBS} install
 
+# ICUB-GAZEBO-WHOLEBODY
+RUN cd ${IIT_SOURCES} &&\
+    git clone https://github.com/robotology-playground/icub-gazebo-wholebody.git &&\
+    cd ${IIT_SOURCES}/icub-gazebo-wholebody &&\
+    git checkout feature/useModelsFromCAD &&\
+    mkdir build && cd build &&\
+    cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          .. &&\
+    make -j ${GCC_JOBS} install
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/models/
+
+# ICUB-MODELS
+RUN cd ${IIT_SOURCES} &&\
+    git clone https://github.com/robotology-playground/icub-models &&\
+    cd ${IIT_SOURCES}/icub-models &&\
+    git remote add origin-diego https://github.com/diegoferigo/icub-models.git &&\
+    git fetch origin-diego &&\
+    git checkout test/updatedModelWithElbowFriction &&\
+    mkdir build && cd build &&\
+    cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          .. &&\
+    make install
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub:${IIT_INSTALL}/share/iCub/robots
+ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share
+
+# SIMMECHANICS-TO-URDF
+RUN \
+    # Dependencies
+    cd ${IIT_SOURCES} &&\
+    git clone https://github.com/ros/urdf_parser_py &&\
+    cd ${IIT_SOURCES}/urdf_parser_py &&\
+    python setup.py install &&\
+    apt-get update &&\
+    apt-get install -y \
+        python-lxml \
+        python-yaml \
+        python-numpy \
+        python-setuptools \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    # Project
+    cd ${IIT_SOURCES} &&\
+    git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
+    cd ${IIT_SOURCES}/simmechanics-to-urdf &&\
+    python setup.py install
+
+# ICUB-MODEL-GENERATOR
+RUN cd ${IIT_SOURCES} &&\
+    git clone https://github.com/robotology-playground/icub-model-generator.git &&\
+    cd ${IIT_SOURCES}/icub-model-generator &&\
+    mkdir build && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DICUB_MODEL_GENERATE_DH:BOOL=OFF \
+          -DICUB_MODEL_GENERATE_SIMMECHANICS:BOOL=ON \
+          -DICUB_MODELS_SOURCE_DIR=${IIT_SOURCES}/icub-models \
+          .. &&\
+    make -j ${GCC_JOBS}
+
 # CODYCO-SUPERBUILD
 RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
     mkdir build && cd build &&\
