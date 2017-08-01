@@ -58,7 +58,10 @@ bind '"\e\e[D": backward-word'
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Set the default editor
-export EDITOR="nano"
+if [ -e $(which nano) ] ; then
+	export EDITOR="nano"
+	echo "include /usr/share/nano/*" > ~/.nanorc
+fi
 
 # Load the ROS environment
 # shellcheck source=/opt/ros/$ROS_DISTRO/setup.bash
@@ -86,7 +89,7 @@ fi
 NANO_FLAGS="-w -S -i -m -$"
 alias nano='nano $NANO_FLAGS'
 alias nanos='nano $NANO_FLAGS -Y sh'
-alias cmake='cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+alias cmake='CC=${CC:-clang} CXX=${CXX-clang} cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 if [ -e $(which pygmentize) ] ; then
 	alias ccat='pygmentize -g'
@@ -113,7 +116,9 @@ if [ -e $(which octave) ] ; then
 	done
 	alias octave='octave -p ${OCTAVE_BINDINGS_ROOT} ${OCTAVE_BINDINGS_DIRS}'
 fi
-
+if [ -e $(which gazebo) ] ; then
+	alias gazebo='gazebo -u'
+fi
 
 # Utility functions
 # =================
@@ -156,18 +161,20 @@ function yarpinit() {
 		else
 			Y_NAMESPACE="$1"
 		fi
+		msg "Setting the YARP namespace"
 		eval "yarp namespace ${Y_NAMESPACE}"
 		# If no yarp server is running, spawn a new instance
+		msg "Detecting YARP..."
 		yarp detect &>/dev/null
 		if [ $? -ne 0 ] ; then
-			msg "YARP is not running"
+			msg2 "YARP is not running"
 			msg2 "Spawning a new yarpserver"
 			yarpserver --write &
 			sleep 2
 		else
-			msg "YARP is already running"
+			msg2 "YARP is already running"
 		fi
-		msg2 "Storing the configuration of the server"
+		msg "Storing the configuration of the server"
 		yarp detect --write &>/dev/null || return 1
 	else
 		err "No yarp namespace is set. Export a YARP_NAME_SPACE env variable or pass it as $1"
