@@ -86,10 +86,11 @@ fi
 # Aliases
 # =======
 
-NANO_FLAGS="-w -S -i -m -$"
-alias nano='nano $NANO_FLAGS'
-alias nanos='nano $NANO_FLAGS -Y sh'
-alias cmake='CC=${CC:-clang} CXX=${CXX-clang} cmake --warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+NANO_DEFAULT_FLAGS="-w -S -i -m -$"
+CMAKE_DEFAULT_FLAGS="--warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+alias nano='nano $NANO_DEFAULT_FLAGS'
+alias nanos='nano $NANO_DEFAULT_FLAGS -Y sh'
+alias cmake='cmake $CMAKE_DEFAULT_FLAGS'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 if [ -e $(which pygmentize) ] ; then
 	alias ccat='pygmentize -g'
