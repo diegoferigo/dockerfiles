@@ -97,7 +97,7 @@ ENV IIT_DIR=/iit
 
 # Build Variables
 ARG SOURCES_GIT_BRANCH=devel
-ARG SOURCES_BUILD_TYPE=Debug
+ENV SOURCES_BUILD_TYPE=Debug
 
 # Use docker cache for steps above
 ARG IIT_DOCKER_SOURCES="20170714"
@@ -105,11 +105,11 @@ ARG IIT_DOCKER_SOURCES="20170714"
 # Configure the MEX provider
 # For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
 # Refer to https://github.com/diegoferigo/dockerfiles/issues/8
-ARG ROBOTOLOGY_USES_OCTAVE=ON
-ARG ROBOTOLOGY_USES_MATLAB=OFF
-ARG ROBOTOLOGY_GENERATE_MEX=OFF
+ENV ROBOTOLOGY_USES_OCTAVE=ON
+ENV ROBOTOLOGY_USES_MATLAB=OFF
+ENV ROBOTOLOGY_GENERATE_MEX=OFF
 # The default is "mex" but "matlab" should become the default
-ARG ROBOTOLOGY_MATLAB_MEX_DIR="matlab"
+ENV ROBOTOLOGY_MATLAB_MEX_DIR="matlab"
 
 # Set the environment up
 # ----------------------
