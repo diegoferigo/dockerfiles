@@ -346,9 +346,6 @@ ENV PATH=${IIT_PATH}:${ROOT_PATH}
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM 1
 
-# Fix the "Error opening terminal: unknown." message
-ENV TERM xterm
-
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev
 COPY bashrc-colors /usr/etc/skel/bashrc-colors

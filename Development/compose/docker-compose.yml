@@ -78,9 +78,9 @@ services:
       - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}/udp"
     mac_address: ${HOST_MATLAB_MAC}
     # -i
-    # stdin_open: true
+    stdin_open: true
     # -t
-    # tty: true
+    tty: true
     command: su -c 'atom -f' ${USERNAME}
 
   gitkraken:
@@ -103,4 +103,8 @@ services:
     devices:
       # HW Acceleration for intel cards
       - "/dev/dri:/dev/dri"
+    # -i
+    stdin_open: true
+    # -t
+    tty: true
     command: su -c "gitkraken" ${USERNAME}
