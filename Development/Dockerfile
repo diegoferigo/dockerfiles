@@ -52,6 +52,15 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/*
 
+# Install other tools
+# ===================
+
+RUN apt-get update &&\
+    apt-get install -y \
+        qt5-default \
+        &&\
+    rm -rf /var/lib/apt/lists/*
+
 # Concurrent compilation jobs
 ENV GCC_JOBS=6
 
