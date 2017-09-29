@@ -98,6 +98,9 @@ ENV IIT_DIR=/iit
 ARG SOURCES_GIT_BRANCH=devel
 ENV SOURCES_BUILD_TYPE=Debug
 
+# Select the main development robot (model loading)
+ENV ROBOT_NAME="iCubGenova04"
+
 # Use docker cache for steps above
 ARG IIT_DOCKER_SOURCES="20170714"
 
@@ -253,9 +256,10 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-gazebo-wholebody.git &&\
     cd ${IIT_SOURCES}/icub-gazebo-wholebody &&\
-    git checkout feature/useModelsFromCAD &&\
+    git checkout feature/useGeneratedModels &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DROBOT_NAME=${ROBOT_NAME} \
           .. &&\
     make -j ${GCC_JOBS} install
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/models/
