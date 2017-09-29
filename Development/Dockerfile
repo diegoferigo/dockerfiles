@@ -143,7 +143,7 @@ RUN cd ${IIT_SOURCES} &&\
 # YCM
 RUN cd ${IIT_SOURCES}/ycm &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS} install
@@ -160,7 +160,7 @@ RUN \
     # Project
     cd ${IIT_SOURCES}/yarp &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DCREATE_GUIS=ON \
@@ -178,7 +178,7 @@ EXPOSE 10000/tcp
 # ICUB-MAIN
 RUN cd ${IIT_SOURCES}/icub-main &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DENABLE_icubmod_cartesiancontrollerserver=ON \
@@ -190,7 +190,7 @@ ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCu
 
 # ICUB-CONTRIB-COMMON
 RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS} install
@@ -199,7 +199,7 @@ ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICU
 # ROBOT-TESTING
 RUN cd ${IIT_SOURCES}/robot-testing &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DENABLE_MIDDLEWARE_PLUGINS=ON \
@@ -209,7 +209,7 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
 # GAZEBO-YARP-PLUGINS
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
@@ -220,7 +220,7 @@ ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTAL
 # YARP-MATLAB-BINDINGS
 RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DYARP_SOURCE_DIR=${IIT_SOURCES}/yarp \
@@ -245,7 +245,7 @@ RUN \
     # Project
     cd ${IIT_SOURCES}/idyntree &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DIDYNTREE_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
@@ -262,7 +262,7 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-gazebo-wholebody.git &&\
     cd ${IIT_SOURCES}/icub-gazebo-wholebody &&\
     git checkout feature/useModelsFromCAD &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make -j ${GCC_JOBS} install
@@ -275,7 +275,7 @@ RUN cd ${IIT_SOURCES} &&\
     git remote add origin-diego https://github.com/diegoferigo/icub-models.git &&\
     git fetch origin-diego &&\
     git checkout test/updatedModelWithElbowFriction &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make install
@@ -308,7 +308,7 @@ RUN \
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
     cd ${IIT_SOURCES}/icub-model-generator &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DICUB_MODEL_GENERATE_DH:BOOL=OFF \
@@ -319,7 +319,7 @@ RUN cd ${IIT_SOURCES} &&\
 
 # CODYCO-SUPERBUILD
 RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
-    mkdir build && cd build &&\
+    mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCODYCO_USES_GAZEBO:BOOL=ON \
           -DNON_INTERACTIVE_BUILD:BOOL=ON \

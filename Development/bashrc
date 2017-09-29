@@ -201,6 +201,7 @@ function cm_template() {
 		# Execute cmake or ccmake. You can pass additional cmake flags and they'll be included
 		BINARY=$1
 		shift 1
+		msg "Executing ${BINARY}"
 		${BINARY} ${CMAKE_FOLDER} \
 		          --warn-uninitialized \
 		          -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
@@ -209,6 +210,7 @@ function cm_template() {
 		# autocomplete-clang instead needs the file to be in the build/ directory
 		cd ..
 		if [ -e build/compile_commands.json ] ; then
+			msg "IDE configuration"
 			msg2 "Generating the compile_commands.json file"
 			cp build/compile_commands.json compile_commands.json
 		else
@@ -334,4 +336,16 @@ function setlocalcodyco () {
 			export $ENV_VAR
 		done
 	fi
+}
+
+# Matlab support is still rough. Some software compiled while creating the image may have
+# components that depend on Matlab. Considering that there is no easy way to share a local
+# copy of Matlab during for creating the image, those components are explicitly disabled.
+# This function, that must be kept aligned with the development of the Dockerfile,
+# sets up all the variables that enable matlab support.
+# After running this function, copying and pasting the cmake command line should be sufficient
+# to enable all the matlab and simulink flags.
+function enable_matlab() {
+	export ROBOTOLOGY_USES_MATLAB=ON
+	export ROBOTOLOGY_GENERATE_MEX=ON
 }
