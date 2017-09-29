@@ -235,15 +235,7 @@ RUN cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
     make -j ${GCC_JOBS} install
 
 # IDYNTREE
-RUN \
-    # Dependencies
-    apt-get update &&\
-    apt-get install -y \
-        liborocos-kdl-dev \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    # Project
-    cd ${IIT_SOURCES}/idyntree &&\
+RUN cd ${IIT_SOURCES}/idyntree &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
@@ -253,7 +245,7 @@ RUN \
           -DIDYNTREE_GENERATE_MATLAB:BOOL=${ROBOTOLOGY_GENERATE_MEX} \
           -DIDYNTREE_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DIDYNTREE_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
-          -DIDYNTREE_USES_KDL:BOOL=ON \
+          -DIDYNTREE_USES_KDL:BOOL=OFF \
           .. &&\
     make -j ${GCC_JOBS} install
 
@@ -326,6 +318,7 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
           -DCODYCO_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DCODYCO_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           -DCODYCO_NOT_USE_YARP_MATLAB_BINDINGS:BOOL=ON \
+          -DCODYCO_USES_KDL:BOOL=OFF \
           .. &&\
     make -j ${GCC_JOBS}
 
