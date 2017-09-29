@@ -68,6 +68,7 @@ services:
       - "${HOST_MATLAB_CONF_DIR}:/home/${USERNAME}/.matlab:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
       - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
+      - "/dev/shm:/dev/shm:rw"
       # GPG commit signing
       # - "/dev/console:/dev/console:rw"
     devices:
@@ -98,6 +99,7 @@ services:
       - "${XAUTH}:${XAUTH}:rw"
       - "${HOST_GITKRAKEN_CONF_DIR}:/home/${USERNAME}/.gitkraken:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
+      - "/dev/shm:/dev/shm:rw"
       # Waiting gitkraken GPG signing support
       # - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
     devices:
