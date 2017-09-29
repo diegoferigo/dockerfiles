@@ -217,7 +217,7 @@ function cm_template() {
 			err "File compile_commands.json not found"
 		fi
 		# If rmd is not running, execute it
-		if [ ! "$(ps ax | tr -s " " | cut -d " " -f 6 | grep rdm)" = "rdm" ] ; then
+		if [ ! "$(ps ax | tr -s " " | awk '{$1=$1};1' | cut -d " " -f 5 | grep rdm)" = "rdm" ] ; then
 			msg2 "rdm is not running. Spawning a process"
 			rdm --daemon
 			sleep 1

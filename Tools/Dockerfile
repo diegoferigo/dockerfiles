@@ -34,6 +34,7 @@ RUN apt-get update &&\
 RUN apt-get update &&\
     apt-get install -y \
         software-properties-common \
+        apt-transport-https \
         wget \
         nano \
         dbus-x11 \

@@ -102,7 +102,7 @@ ENV SOURCES_BUILD_TYPE=Debug
 ENV ROBOT_NAME="iCubGenova04"
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20170714"
+ARG IIT_DOCKER_SOURCES="20170926"
 
 # Configure the MEX provider
 # For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
@@ -249,6 +249,7 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
           -DIDYNTREE_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DIDYNTREE_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DIDYNTREE_USES_KDL:BOOL=OFF \
+          -DYCM_USE_DEPRECATED=OFF \
           .. &&\
     make -j ${GCC_JOBS} install
 
