@@ -46,7 +46,6 @@ RUN apt-get update &&\
         libeigen3-dev \
         libgsl-dev \
         libedit-dev \
-        libace-dev \
         coinor-libipopt-dev \
         liboctave-dev \
         &&\
@@ -165,6 +164,7 @@ RUN \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DCREATE_GUIS=ON \
           -DCREATE_LIB_MATH=ON \
+          -DSKIP_ACE=ON \
           .. &&\
     make -j ${GCC_JOBS} install &&\
     ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
