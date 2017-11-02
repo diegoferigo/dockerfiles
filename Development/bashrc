@@ -75,6 +75,12 @@ if [ -x $(which ccache) ] ; then
 	export PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
 fi
 
+# If clang is installed, use it as default compiler
+if [[ -x $(which clang) && -x $(which clang++) ]] ; then
+	export CC="clang"
+	export CXX="clang++"
+fi
+
 # Enable matlab
 if [ -x "/home/${USERNAME}/.MATLAB/bin/matlab" ] ; then
 	export PATH=${PATH}:/home/${USERNAME}/.MATLAB/bin
