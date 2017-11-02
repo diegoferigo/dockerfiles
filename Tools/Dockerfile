@@ -1,4 +1,4 @@
-FROM ubuntu:rolling
+FROM ubuntu:zesty
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Build and development tools
