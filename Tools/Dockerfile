@@ -60,10 +60,6 @@ RUN add-apt-repository -y ppa:webupd8team/atom &&\
     rm -rf /var/lib/apt/lists/*
 
 # Packages with no ppa
-ARG GITKRAKEN_VER=3.0.2
-RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
-    apt install /v${GITKRAKEN_VER}.deb &&\
-    rm /v${GITKRAKEN_VER}.deb
 # TODO: check optional dependencies
 ENV GCC_JOBS=4
 RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
@@ -74,6 +70,10 @@ RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
     make -j ${GCC_JOBS} &&\
     make install &&\
     rm -r /rtags
+ARG GITKRAKEN_VER=3.2.0
+RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
+    apt install /v${GITKRAKEN_VER}.deb &&\
+    rm /v${GITKRAKEN_VER}.deb
 
 # Atom packages
 COPY atom_packages.txt /usr/local/etc
