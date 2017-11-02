@@ -38,25 +38,32 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/*
 
-# Install libraries
-# =================
+# Install libraries and tools
+# ===========================
 
 RUN apt-get update &&\
     apt-get install -y \
+        # MISC
+        qt5-default \
+        # SWIG
+        autotools-dev \
+        automake \
+        bison \
+        # YARP
         libeigen3-dev \
         libgsl-dev \
         libedit-dev \
+        libqcustomplot-dev \
+        qtmultimedia5-dev \
+        # IDYNTREE
         coinor-libipopt-dev \
+        # BINDINGS
         liboctave-dev \
-        &&\
-    rm -rf /var/lib/apt/lists/*
-
-# Install other tools
-# ===================
-
-RUN apt-get update &&\
-    apt-get install -y \
-        qt5-default \
+        # SIMMECHANICS-TO-URDF
+        python-lxml \
+        python-yaml \
+        python-numpy \
+        python-setuptools \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -65,17 +72,7 @@ ENV GCC_JOBS=6
 
 # Install SWIG with Matlab / Octave support
 # ... waiting its upstream merge
-RUN \
-    # Dependencies
-    apt-get update &&\
-    apt-get install -y \
-        autotools-dev \
-        automake \
-        bison \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    # Project
-    git clone https://github.com/jaeandersson/swig.git &&\
+RUN git clone https://github.com/jaeandersson/swig.git &&\
     cd swig &&\
     git checkout matlab &&\
     sh autogen.sh &&\
@@ -129,15 +126,18 @@ ENV PATH=${IIT_PATH}:${PATH}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 RUN cd ${IIT_SOURCES} &&\
+    git clone https://github.com/robotology/ycm.git &&\
     git clone https://github.com/robotology/yarp.git &&\
     git clone https://github.com/robotology/icub-main.git &&\
     git clone https://github.com/robotology/icub-contrib-common.git &&\
     git clone https://github.com/robotology/robot-testing.git &&\
-    git clone https://github.com/robotology/ycm.git &&\
     git clone https://github.com/robotology/gazebo-yarp-plugins.git &&\
-    git clone https://github.com/robotology/codyco-superbuild.git &&\
     git clone https://github.com/robotology-playground/yarp-matlab-bindings.git &&\
-    git clone https://github.com/robotology/idyntree.git
+    git clone https://github.com/robotology/idyntree.git &&\
+    git clone https://github.com/ros/urdf_parser_py &&\
+    git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
+    git clone https://github.com/robotology-playground/icub-model-generator.git &&\
+    git clone https://github.com/robotology/codyco-superbuild.git
 
 # Build all sources
 # -----------------
@@ -152,14 +152,6 @@ RUN cd ${IIT_SOURCES}/ycm &&\
 
 # YARP
 RUN \
-    # Dependencies
-    apt-get update &&\
-    apt-get install -y \
-        libqcustomplot-dev \
-        qtmultimedia5-dev \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    # Project
     cd ${IIT_SOURCES}/yarp &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
@@ -283,28 +275,14 @@ ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/
 # SIMMECHANICS-TO-URDF
 RUN \
     # Dependencies
-    cd ${IIT_SOURCES} &&\
-    git clone https://github.com/ros/urdf_parser_py &&\
     cd ${IIT_SOURCES}/urdf_parser_py &&\
     python setup.py install &&\
-    apt-get update &&\
-    apt-get install -y \
-        python-lxml \
-        python-yaml \
-        python-numpy \
-        python-setuptools \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
     # Project
-    cd ${IIT_SOURCES} &&\
-    git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
     cd ${IIT_SOURCES}/simmechanics-to-urdf &&\
     python setup.py install
 
 # ICUB-MODEL-GENERATOR
-RUN cd ${IIT_SOURCES} &&\
-    git clone https://github.com/robotology-playground/icub-model-generator.git &&\
-    cd ${IIT_SOURCES}/icub-model-generator &&\
+RUN cd ${IIT_SOURCES}/icub-model-generator &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
