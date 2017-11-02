@@ -71,7 +71,9 @@ source "/opt/ros/$ROS_DISTRO/setup.bash"
 source /usr/share/gazebo/setup.sh
 
 # Enable ccache for the user created during runtime
-export PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
+if [ -x $(which ccache) ] ; then
+	export PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
+fi
 
 # Enable matlab
 if [ -x "/home/${USERNAME}/.MATLAB/bin/matlab" ] ; then
