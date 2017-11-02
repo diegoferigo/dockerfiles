@@ -196,21 +196,18 @@ function cm_template() {
 	msg "Starting the build process"
 	if [ -e CMakeLists.txt ] ; then
 		msg2 "CMakeLists.txt found"
-		# If build/ exists, use cmake ., otherwise cmake ..
-		if [[ -d build/ ]] ; then
+		if [ -e build/CMakeCache.txt ] ; then
 			msg2 "Using CMake cache"
-			CMAKE_FOLDER="."
 		else
 			msg2 "Creating new build folder"
-			CMAKE_FOLDER=".."
-			mkdir build/
+			mkdir -p build/
 		fi
 		cd build  || return 1
 		# Execute cmake or ccmake. You can pass additional cmake flags and they'll be included
 		BINARY=$1
 		shift 1
 		msg "Executing ${BINARY}"
-		${BINARY} ${CMAKE_FOLDER} \
+		${BINARY} .. \
 		          --warn-uninitialized \
 		          -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		          "$@"
