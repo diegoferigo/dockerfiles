@@ -96,10 +96,10 @@ ARG SOURCES_GIT_BRANCH=devel
 ENV SOURCES_BUILD_TYPE=Debug
 
 # Select the main development robot (model loading)
-ENV ROBOT_NAME="iCubGenova04"
+ENV ROBOT_NAME="iCubGenovaV2_5"
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20170926"
+ARG IIT_DOCKER_SOURCES="20171102"
 
 # Configure the MEX provider
 # For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
@@ -261,13 +261,14 @@ ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-models &&\
     cd ${IIT_SOURCES}/icub-models &&\
-    git remote add origin-diego https://github.com/diegoferigo/icub-models.git &&\
-    git fetch origin-diego &&\
-    git checkout test/updatedModelWithElbowFriction &&\
+    #git remote add origin-diego https://github.com/diegoferigo/icub-models.git &&\
+    #git fetch origin-diego &&\
+    #git checkout test/updatedModelWithElbowFriction &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make install
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub/robots/$ROBOT_NAME
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub:${IIT_INSTALL}/share/iCub/robots
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share
@@ -307,7 +308,7 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
 
 # Set the codyco-superbuild environment up
 ENV CODYCO_SUPERBUILD_ROOT=${IIT_SOURCES}/codyco-superbuild
-ARG CODYCO_SUPERBUILD_INSTALL=${CODYCO_SUPERBUILD_ROOT}/build/install
+ENV CODYCO_SUPERBUILD_INSTALL=${CODYCO_SUPERBUILD_ROOT}/build/install
 ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${CODYCO_SUPERBUILD_ROOT}/build/install/bin
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/lib
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${CODYCO_SUPERBUILD_INSTALL}/share/codyco
