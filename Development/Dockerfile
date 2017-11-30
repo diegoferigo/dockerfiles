@@ -96,10 +96,11 @@ ARG SOURCES_GIT_BRANCH=devel
 ENV SOURCES_BUILD_TYPE=Debug
 
 # Select the main development robot (model loading)
-ENV ROBOT_NAME="iCubGenovaV2_5"
+ENV ROBOT_NAME="iCubGazeboV2_5"
+ENV YARP_ROBOT_NAME="iCubGazeboV2_5"
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20171102"
+ARG IIT_DOCKER_SOURCES="20171130"
 
 # Configure the MEX provider
 # For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
@@ -261,15 +262,12 @@ ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-models &&\
     cd ${IIT_SOURCES}/icub-models &&\
-    #git remote add origin-diego https://github.com/diegoferigo/icub-models.git &&\
-    #git fetch origin-diego &&\
-    #git checkout test/updatedModelWithElbowFriction &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     make install
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub/robots/$ROBOT_NAME
-ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub:${IIT_INSTALL}/share/iCub/robots
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub/robots:${IIT_INSTALL}/share
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share
 
@@ -301,8 +299,12 @@ RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
           -DCODYCO_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DCODYCO_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DCODYCO_USES_WBI_TOOLBOX_CONTROLLERS=${ROBOTOLOGY_USES_MATLAB} \
           -DCODYCO_NOT_USE_YARP_MATLAB_BINDINGS:BOOL=ON \
           -DCODYCO_USES_KDL:BOOL=OFF \
+          -DYCM_USE_DEPRECATED:BOOL=OFF \
+          -DYCM_EP_EXPERT_MODE:BOOL=ON \
+          -DYCM_EP_MAINTAINER_MODE:BOOL=ON \
           .. &&\
     make -j ${GCC_JOBS}
 
