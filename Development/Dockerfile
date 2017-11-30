@@ -85,35 +85,10 @@ RUN git clone https://github.com/jaeandersson/swig.git &&\
 # Install YARP, iCub and friends from sources
 # ===========================================
 
-# User defined variables
-# ----------------------
-
 # Environment setup of the robotology repositories
+# ------------------------------------------------
+ 
 ENV IIT_DIR=/iit
-
-# Build Variables
-ARG SOURCES_GIT_BRANCH=devel
-ENV SOURCES_BUILD_TYPE=Debug
-
-# Select the main development robot (model loading)
-ENV ROBOT_NAME="iCubGazeboV2_5"
-ENV YARP_ROBOT_NAME="iCubGazeboV2_5"
-
-# Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20171130"
-
-# Configure the MEX provider
-# For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
-# Refer to https://github.com/diegoferigo/dockerfiles/issues/8
-ENV ROBOTOLOGY_USES_OCTAVE=ON
-ENV ROBOTOLOGY_USES_MATLAB=OFF
-ENV ROBOTOLOGY_GENERATE_MEX=OFF
-# The default is "mex" but "matlab" should become the default
-ENV ROBOTOLOGY_MATLAB_MEX_DIR="matlab"
-
-# Set the environment up
-# ----------------------
-
 ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
@@ -139,6 +114,29 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
     git clone https://github.com/robotology/codyco-superbuild.git
+
+# Env variables for configuring the sources
+# -----------------------------------------
+
+# Build Variables
+ARG SOURCES_GIT_BRANCH=devel
+ENV SOURCES_BUILD_TYPE=Release
+
+# Select the main development robot (model loading)
+ENV ROBOT_NAME="iCubGazeboV2_5"
+ENV YARP_ROBOT_NAME="iCubGazeboV2_5"
+
+# Use docker cache for steps above
+ARG IIT_DOCKER_SOURCES="20171130"
+
+# Configure the MEX provider
+# For the time being, ROBOTOLOGY_USES_MATLAB=ON is not supported.
+# Refer to https://github.com/diegoferigo/dockerfiles/issues/8
+ENV ROBOTOLOGY_USES_OCTAVE=ON
+ENV ROBOTOLOGY_USES_MATLAB=OFF
+ENV ROBOTOLOGY_GENERATE_MEX=OFF
+# The default is "mex" but "matlab" should become the default
+ENV ROBOTOLOGY_MATLAB_MEX_DIR="matlab"
 
 # Build all sources
 # -----------------
