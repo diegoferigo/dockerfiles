@@ -82,6 +82,12 @@ services:
     stdin_open: true
     # -t
     tty: true
+    # Enable ptrace for running GDB
+    # https://github.com/moby/moby/issues/7276
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     command: su -c 'atom -f' ${USERNAME}
 
   gitkraken:
