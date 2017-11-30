@@ -11,6 +11,7 @@ RUN apt-get update &&\
         ninja-build \
         llvm \
         clang \
+        lldb \
         libclang-dev \
         gdb \
         valgrind \
