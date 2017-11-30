@@ -71,7 +71,7 @@ RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
     make -j ${GCC_JOBS} &&\
     make install &&\
     rm -r /rtags
-ARG GITKRAKEN_VER=3.2.0
+ARG GITKRAKEN_VER=3.3.0
 RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /v${GITKRAKEN_VER}.deb &&\
     rm /v${GITKRAKEN_VER}.deb
