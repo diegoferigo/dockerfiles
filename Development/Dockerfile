@@ -333,3 +333,13 @@ COPY bashrc-colors /usr/etc/skel/bashrc-colors
 COPY entrypoint.sh /usr/sbin/entrypoint-dev.sh
 RUN chmod 755 /usr/sbin/entrypoint-dev.sh
 ENTRYPOINT ["/usr/sbin/entrypoint-dev.sh"]
+
+# nvidia-docker 1.0
+LABEL com.nvidia.volumes.needed="nvidia_driver"
+
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+RUN ldconfig
+
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
