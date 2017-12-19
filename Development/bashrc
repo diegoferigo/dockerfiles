@@ -76,9 +76,9 @@ if [ -x $(which ccache) ] ; then
 fi
 
 # If clang is installed, use it as default compiler
-if [[ -x $(which clang) && -x $(which clang++) ]] ; then
-	export CC="clang"
-	export CXX="clang++"
+if [[ -x $(which clang-5.0) && -x $(which clang++-5.0) ]] ; then
+	export CC="clang-5.0"
+	export CXX="clang++-5.0"
 fi
 
 # Enable matlab
@@ -289,15 +289,13 @@ function ccmiit() {
 
 # Function to switch gcc/clang compiler
 function compiler.set() {
-	if [[ "$1" = "gcc" || "$1" = "clang" ]] ; then
 		case $1 in
-			gcc)   export CC="gcc"   && export CXX="g++"     ;;
-			clang) export CC="clang" && export CXX="clang++" ;;
+			gcc|1)   export CC="gcc"   && export CXX="g++"     ;;
+			clang|2) export CC="clang" && export CXX="clang++" ;;
+			clang5|3) export CC="clang-5.0" && export CXX="clang++-5.0" ;;
+			*) err "$1: only gcc, clang and clang5 are supported compilers" ; return 1 ;;
 		esac
-	else
-		err "$1: only gcc and clang are supported compilers"
-		return 1
-	fi
+		return 0
 }
 
 function compiler.get() {
@@ -307,6 +305,9 @@ function compiler.get() {
 	elif [[ "$CC" = "clang" && "$CXX" = "clang++" ]] ; then
 		msg "The active compiler is: clang"
 		return 2
+	elif [[ "$CC" = "clang-5.0" && "$CXX" = "clang++-5.0" ]] ; then
+		msg "The active compiler is: clang-5.0"
+		return 3
 	else
 		err "The compiler environment variables aren't set"
 		return 2
@@ -316,8 +317,9 @@ function compiler.get() {
 function compiler.switch() {
 	compiler.get
 	case $? in
-		1) msg "Switching to: clang" ; compiler.set clang ;;
-		2) msg "Switching to: gcc"   ;  compiler.set gcc  ;;
+		1) msg "Switching to: clang"  ;  compiler.set 2 ;;
+		2) msg "Switching to: clang5" ;  compiler.set 3 ;;
+		3) msg "Switching to: gcc"    ;  compiler.set 1 ;;
 		*) err "Compiler not set. Setting gcc." ; compiler.set gcc ;;
 	esac
 }

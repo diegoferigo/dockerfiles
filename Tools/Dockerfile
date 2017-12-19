@@ -1,37 +1,7 @@
 FROM ubuntu:zesty
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
-# Build and development tools
-RUN apt-get update &&\
-    apt-get install -y \
-        build-essential \
-        git \
-        cmake \
-        cmake-curses-gui \
-        ninja-build \
-        llvm \
-        clang \
-        lldb \
-        libclang-dev \
-        gdb \
-        valgrind \
-        valkyrie \
-        ccache \
-        doxygen \
-        &&\
-    rm -rf /var/lib/apt/lists/*
-ENV ROOT_PATH=$PATH
-
-# Libraries
-
-# Setup HW Acceleration for Intel graphic cards
-RUN apt-get update &&\
-    apt-get install -y \
-        libgl1-mesa-glx \
-        libgl1-mesa-dri &&\
-    rm -rf /var/lib/apt/lists/*
-
-# Other packages
+# Utilities
 RUN apt-get update &&\
     apt-get install -y \
         software-properties-common \
@@ -50,6 +20,40 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     pip install colour-valgrind
+
+# Updated clang ppa
+RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
+    apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-5.0 main" &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Build and development tools
+RUN apt-get update &&\
+    apt-get install -y \
+        build-essential \
+        git \
+        cmake \
+        cmake-curses-gui \
+        ninja-build \
+        llvm-5.0 \
+        clang-5.0 \
+        lldb-5.0 \
+        libclang-5.0-dev \
+        clang-format-5.0 \
+        gdb \
+        valgrind \
+        valkyrie \
+        ccache \
+        doxygen \
+        &&\
+    rm -rf /var/lib/apt/lists/*
+ENV ROOT_PATH=$PATH
+
+# Setup HW Acceleration for Intel graphic cards
+RUN apt-get update &&\
+    apt-get install -y \
+        libgl1-mesa-glx \
+        libgl1-mesa-dri &&\
+    rm -rf /var/lib/apt/lists/*
 
 # Editor (Atom + plugins)
 # In the future, check if libxss1 will become an atom package dependency
