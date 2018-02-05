@@ -85,7 +85,9 @@ COPY atom_packages.txt /usr/local/etc
 RUN apm install --packages-file /usr/local/etc/atom_packages.txt
 
 # Setup an additional entrypoint script
-COPY entrypoint.sh /usr/sbin/entrypoint.sh
-RUN chmod 755 /usr/sbin/entrypoint.sh
-ENTRYPOINT ["/usr/sbin/entrypoint.sh"]
+COPY setup.sh /usr/sbin/setup_tools.sh
+COPY entrypoint.sh /usr/sbin/entrypoint_tools.sh
+RUN chmod 755 /usr/sbin/setup_tools.sh
+RUN chmod 755 /usr/sbin/entrypoint_tools.sh
+ENTRYPOINT ["/usr/sbin/entrypoint_tools.sh"]
 CMD ["bash"]

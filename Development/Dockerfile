@@ -329,9 +329,11 @@ COPY bashrc /usr/etc/skel/bashrc-dev
 COPY bashrc-colors /usr/etc/skel/bashrc-colors
 
 # Include an additional entrypoint script
-COPY entrypoint.sh /usr/sbin/entrypoint-dev.sh
-RUN chmod 755 /usr/sbin/entrypoint-dev.sh
-ENTRYPOINT ["/usr/sbin/entrypoint-dev.sh"]
+COPY entrypoint.sh /usr/sbin/entrypoint_development.sh
+RUN chmod 755 /usr/sbin/entrypoint_development.sh
+COPY setup.sh /usr/sbin/setup_development.sh
+RUN chmod 755 /usr/sbin/setup_development.sh
+ENTRYPOINT ["/usr/sbin/entrypoint_development.sh"]
 
 # nvidia-docker 1.0
 LABEL com.nvidia.volumes.needed="nvidia_driver"
