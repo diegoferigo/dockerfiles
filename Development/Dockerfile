@@ -4,13 +4,13 @@ MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 # Install ROS Desktop Full
 # ========================
 
-# Get gazebo8 from the osrf repo
+# Get gazebo9 from the osrf repo
 RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list' &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
     apt-get install --no-install-recommends -y \
-        gazebo8 \
-        libgazebo8-dev \
+        gazebo9 \
+        libgazebo9-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -194,7 +194,9 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
     make -j ${GCC_JOBS} install
 
 # GAZEBO-YARP-PLUGINS
-RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
+RUN ln -s /usr/lib/x86_64-linux-gnu/atlas/libblas.so /usr/lib/libblas.so &&\
+    ln -s /usr/lib/x86_64-linux-gnu/atlas/liblapack.so /usr/lib/liblapack.so &&\
+    cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
