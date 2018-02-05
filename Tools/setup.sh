@@ -44,6 +44,16 @@ create_user() {
 # Create the user
 create_user
 
+# Set a default root password
+ROOT_PASSWORD="root"
+echo "root:${ROOT_PASSWORD}" | chpasswd
+
+# Set a default password
+USER_PASSWORD=${USERNAME}
+echo "${USERNAME}:${USER_PASSWORD}" | chpasswd
+echo "${USERNAME}    ALL=(ALL:ALL) ALL" > /etc/sudoers.d/${USERNAME}.conf
+chmod 440 /etc/sudoers.d/${USERNAME}.conf
+
 # Add the user to video group for HW acceleration (only Intel cards supported)
 usermod -aG video ${USERNAME}
 

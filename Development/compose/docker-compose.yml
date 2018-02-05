@@ -50,6 +50,8 @@ services:
       - /dev/shm:/dev/shm:rw
       # GPG commit signing
       # - "/dev/console:/dev/console:rw"
+      # systemd
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     devices:
       # HW Acceleration for intel cards
       - /dev/dri:/dev/dri
@@ -61,7 +63,17 @@ services:
     # Enable ptrace for running GDB
     # https://github.com/moby/moby/issues/7276
     cap_add:
+        # Debugger support
       - SYS_PTRACE
+        # Systemd support
+      - SYS_ADMIN
     security_opt:
+        # Debugger support
       - seccomp:unconfined
-    command: su -c 'atom -f' ${USERNAME}
+    tmpfs:
+        # Systemd support
+      - /tmp
+      - /run
+      - /run/lock
+    stop_signal: SIGRTMIN+3 # Systemd support
+    command: /sbin/init

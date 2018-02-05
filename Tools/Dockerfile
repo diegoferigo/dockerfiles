@@ -4,6 +4,7 @@ MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 # Utilities
 RUN apt-get update &&\
     apt-get install -y \
+        sudo \
         software-properties-common \
         apt-transport-https \
         wget \
