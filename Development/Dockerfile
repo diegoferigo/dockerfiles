@@ -55,6 +55,11 @@ RUN apt-get update &&\
         libedit-dev \
         libqcustomplot-dev \
         qtmultimedia5-dev \
+        qtdeclarative5-dev \
+        libqt5opengl5-dev \
+        qttools5-dev \
+        # GAZEBO-YARP-PLUGINS
+        libatlas-base-dev \
         # IDYNTREE
         coinor-libipopt-dev \
         # BINDINGS
@@ -259,6 +264,16 @@ ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/sha
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share
 
 # SIMMECHANICS-TO-URDF
+ENV ROS_DISTRO lunar
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
+                --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
+    echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
+        > /etc/apt/sources.list.d/ros-latest.list &&\
+    apt-get update &&\
+    apt-get install --no-install-recommends -y \
+        python-catkin-pkg \
+        &&\
+    rm -rf /var/lib/apt/lists/*
 RUN \
     # Dependencies
     cd ${IIT_SOURCES}/urdf_parser_py &&\
