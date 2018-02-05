@@ -61,14 +61,16 @@ services:
       - "${XAUTH}:${XAUTH}:rw"
       # Persistent folders
       - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
-      - "${HOST_ATOM_CONF_DIR}:/home/${USERNAME}/.atom:rw"
-      - "${HOST_YARPLOCAL_DIR}:/home/${USERNAME}/.local:rw"
-      - "${HOST_CCACHE_DIR}:/home/${USERNAME}/.ccache:rw"
-      - "${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw"
-      - "${HOST_MATLAB_CONF_DIR}:/home/${USERNAME}/.matlab:rw"
       - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
-      - "/home/${USERNAME}/.bash_history_docker:/home/${USERNAME}/.bash_history:rw"
       - "/dev/shm:/dev/shm:rw"
+      - ${HOST_ATOM_DOT_DIR}:/home/${USERNAME}/.atom:rw
+      - ${HOST_ATOM_CONF_DIR}:/home/${USERNAME}/.config/Atom:rw
+      - ${HOST_GITKRAKEN_DOT_DIR}:/home/${USERNAME}/.gitkraken:rw
+      - ${HOST_YARPLOCAL_DIR}:/home/${USERNAME}/.local/share/yarp:rw
+      - ${HOST_CCACHE_DIR}:/home/${USERNAME}/.ccache:rw
+      - ${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw
+      - ${HOST_MATLAB_DOT_DIR}:/home/${USERNAME}/.matlab:rw
+      - ${HOST_BASH_HISTORY_FILE}:/home/${USERNAME}/.bash_history:rw
       # GPG commit signing
       # - "/dev/console:/dev/console:rw"
     devices:

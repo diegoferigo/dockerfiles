@@ -12,9 +12,29 @@ EC_DOCKERCOMPOSE_NOTFOUND=3
 EC_DOCKERCOMPOSE=4
 EC_ENV_NOTFOUND=5
 
+# LOAD .env FILE
+# ==============
+
+if [ -e $(pwd)/.env ] ; then
+	source .env
+else
+	err ".env file not found!"
+	exit $EC_ENV_NOTFOUND
+fi
+
 # CONSTANTS
 # =========
 readonly PROJECT_DIR_DEFAULT="/tmp/docker-tmpfolder"
+declare -a PERSISTENT_FILES
+declare -a PERSISTENT_FOLDERS
+PERSISTENT_FILES=($HOST_BASH_HISTORY_FILE)
+PERSISTENT_FOLDERS=($HOST_CCACHE_DIR
+                    $HOST_ATOM_DOT_DIR \
+                    $HOST_ATOM_CONF_DIR \
+                    $HOST_QTCREATOR_CONF_DIR \
+                    $HOST_MATLAB_DOT_DIR \
+                    $HOST_GITKRAKEN_DOT_DIR \
+                    $HOST_YARPLOCAL_DIR)
 
 # UTILITY FUNCTIONS AND VARIABLES
 # ===============================
@@ -82,7 +102,24 @@ function find-docker-bin()
 	msg2 "Using $DOCKERCOMPOSE_BIN"
 }
 
-function docker-workspace()
+function handle_persistent_resources()
+{
+	# Persistent files
+	for file in "${PERSISTENT_FILES[@]}" ; do
+		if [ ! -f $file ] ; then
+			touch $file || (err2 "Unable to create $file" && exit 1)
+		fi
+	done
+
+	# Persistent folders
+	for folder in "${PERSISTENT_FOLDERS[@]}" ; do
+		if [ ! -d $folder ] ; then
+			mkdir -p $folder || (err2 "Unable to create $folder" && exit 1)
+		fi
+	done
+}
+
+function docker_workspace()
 {
 	case $1 in
 		start|up)
@@ -113,9 +150,8 @@ function docker-workspace()
 			# Create the persistent bash history file if not already present
 			# This is needed because otherwise docker will create a directory
 			# instead of a text file
-			if [ ! -d $HOME/.bash_history_docker ] ; then
-				touch $HOME/.bash_history_docker
-			fi
+			msg "Handling persistent resources"
+			handle_persistent_resources
 
 			# Compose the workspace containers
 			msg "Composing the containers"
@@ -144,14 +180,6 @@ function docker-workspace()
 
 # MAIN
 # ====
-
-# Load variables from .env
-if [ -e $(pwd)/.env ] ; then
-	source .env
-else
-	err ".env file not found!"
-	exit $EC_ENV_NOTFOUND
-fi
 
 # Parse cmdline
 while getopts :p: OPT ; do
