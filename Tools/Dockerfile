@@ -88,6 +88,31 @@ RUN cd /tmp &&\
     apt install /tmp/v${GITKRAKEN_VER}.deb &&\
     rm v${GITKRAKEN_VER}.deb
 
+# rr
+RUN apt-get update &&\
+    apt-get install -y \
+        ccache \
+        cmake \
+        make \
+        g++-multilib \
+        gdb \
+        pkg-config \
+        realpath \
+        python-pexpect \
+        manpages-dev \
+        git \
+        ninja-build \
+        capnproto \
+        libcapnp-dev &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /tmp &&\
+    git clone https://github.com/mozilla/rr.git &&\
+    cd rr && mkdir build && cd build &&\
+    CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} cmake -G Ninja .. &&\
+    cmake --build . &&\
+    cmake --build . --target install &&\
+    rm -r /tmp/rr
+
 # Setup an additional entrypoint script
 COPY setup.sh /usr/sbin/setup_tools.sh
 COPY entrypoint.sh /usr/sbin/entrypoint_tools.sh
