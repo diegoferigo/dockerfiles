@@ -88,7 +88,7 @@ function print_help()
 # FUNCTIONS
 # =========
 
-function find-docker-bin()
+function find_docker_bin()
 {
 	msg "Finding the docker-compose binary"
 	if [ -x $(which nvidia-docker-compose) ] ; then
@@ -96,7 +96,7 @@ function find-docker-bin()
 	elif [ -x $(which docker-compose) ] ; then
 		DOCKERCOMPOSE_BIN=$(which docker-compose)
 	else
-		err "Docker compose not found! Check your $PATH"
+		err "Docker compose not found! Check your \$PATH"
 		exit $EC_DOCKERCOMPOSE_NOTFOUND
 	fi
 	msg2 "Using $DOCKERCOMPOSE_BIN"
@@ -199,5 +199,5 @@ IN_OPT_WDIR=${IN_OPT_WDIR:-" "}
 shift $((OPTIND - 1))
 COMMAND="$@"
 
-find-docker-bin
-docker-workspace $COMMAND $IN_OPT_WDIR
+find_docker_bin
+docker_workspace $COMMAND $IN_OPT_WDIR

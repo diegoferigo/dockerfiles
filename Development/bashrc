@@ -64,7 +64,6 @@ if [ -e $(which nano) ] ; then
 fi
 
 # Load the ROS environment
-# shellcheck source=/opt/ros/$ROS_DISTRO/setup.bash
 source "/opt/ros/$ROS_DISTRO/setup.bash"
 
 # Load the gazebo environment
