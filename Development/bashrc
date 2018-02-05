@@ -63,6 +63,12 @@ if [ -e $(which nano) ] ; then
 	echo "include /usr/share/nano/*" > ~/.nanorc
 fi
 
+# Load the robotogy-superbuild environment
+if [[ -e ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh && -z $SUPERBUILD_SOURCED ]] ; then
+    source ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh
+    export SUPERBUILD_SOURCED=1
+fi
+
 # Load the ROS environment
 if [ -e /opt/ros/$ROS_DISTRO/setup.bash ] ; then
     source /opt/ros/$ROS_DISTRO/setup.bash
@@ -87,8 +93,8 @@ fi
 # Enable matlab
 if [ -x "/home/${USERNAME}/.MATLAB/bin/matlab" ] ; then
 	export PATH=${PATH}:/home/${USERNAME}/.MATLAB/bin
-	export MATLABPATH=${CODYCO_SUPERBUILD_ROOT}/build/install/mex/:${CODYCO_SUPERBUILD_ROOT}/build/install/share/WB-Toolbox/:${CODYCO_SUPERBUILD_ROOT}/build/install/share/WB-Toolbox/images
-	# https://github.com/robotology/codyco-superbuild/issues/141
+	export MATLABPATH=${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/mex/:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WB-Toolbox/:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WB-Toolbox/images
+	# https://github.com/robotology/WB-Toolbox#problems-finding-libraries-and-libstdc
 	alias matlab="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab"
 	# Set the bindings up
 	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab

@@ -293,33 +293,59 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
           .. &&\
     make -j ${GCC_JOBS}
 
-# CODYCO-SUPERBUILD
-RUN cd ${IIT_SOURCES}/codyco-superbuild &&\
+# ROBOTOLOGY-SUPERBUILD
+# The bashrc-dev will source the variables exported by this repo
+RUN cd ${IIT_SOURCES} &&\
+    git clone https://github.com/diegoferigo/robotology-superbuild.git &&\
+    cd ${IIT_SOURCES}/robotology-superbuild &&\
+    git checkout add_LDLIBPATH_template &&\
     mkdir -p build && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCODYCO_USES_GAZEBO:BOOL=ON \
+    cmake \
+          -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
+          -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
+          -DROBOTOLOGY_USES_GAZEBO:BOOL=ON \
+          -DROBOTOLOGY_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
+          -DROBOTOLOGY_USES_MATLAB:BOOL=OFF \
+          #-DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB}
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
-          -DCODYCO_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
-          -DCODYCO_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
-          -DCODYCO_USES_WBI_TOOLBOX_CONTROLLERS=${ROBOTOLOGY_USES_MATLAB} \
-          -DCODYCO_NOT_USE_YARP_MATLAB_BINDINGS:BOOL=ON \
-          -DCODYCO_USES_KDL:BOOL=OFF \
           -DYCM_USE_DEPRECATED:BOOL=OFF \
           -DYCM_EP_EXPERT_MODE:BOOL=ON \
           -DYCM_EP_MAINTAINER_MODE:BOOL=ON \
           .. &&\
-    make -j ${GCC_JOBS}
+    make update-all -j 1
+# Waiting https://github.com/robotology/robotology-superbuild/issues/33
+RUN cd ${IIT_SOURCES}/robotology-superbuild/build &&\
+    # Checkout codyco-modules devel branch
+    cd ../robotology/codyco-modules &&\
+    git checkout devel &&\
+    cd - &&\
+    # Checkout yarp-matlab-bindings devel branch
+    cd ../robotology/yarp-matlab-bindings &&\
+    git checkout devel &&\
+    git config user.email "you@example.com" &&\
+    git config user.name "Your Name" &&\
+    cd - &&\
+    cmake -DYCM_EP_DEVEL_MODE_codyco-modules:BOOL=ON \
+          -DYCM_EP_DEVEL_MODE_yarp-matlab-bindings:BOOL=ON \
+          . &&\
+    make -j ${GCC_JOBS} &&\
+    cd ../robotology/yarp-matlab-bindings &&\
+    git config --unset user.email &&\
+    git config --unset user.name
 
-# Set the codyco-superbuild environment up
-ENV CODYCO_SUPERBUILD_ROOT=${IIT_SOURCES}/codyco-superbuild
-ENV CODYCO_SUPERBUILD_INSTALL=${CODYCO_SUPERBUILD_ROOT}/build/install
-ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${CODYCO_SUPERBUILD_ROOT}/build/install/bin
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/lib
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${CODYCO_SUPERBUILD_INSTALL}/share/codyco
-ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/lib
-ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/share/gazebo/models
-ENV GAZEBO_RESOURCE_PATH=${GAZEBO_RESOURCE_PATH:+${GAZEBO_RESOURCE_PATH}:}${CODYCO_SUPERBUILD_INSTALL}/share/gazebo/worlds
-ENV PATH=${IIT_PATH}:${ROOT_PATH}
+# These projects will be included soon in the new superbuild
+RUN cd ${IIT_SOURCES} &&\
+    git clone -b WBT3 https://github.com/robotology-playground/wholeBodyControllers.git &&\
+    git clone -b WB3.0 https://github.com/robotology/WB-Toolbox.git &&\
+    cd ${IIT_SOURCES}/WB-Toolbox &&\
+    mkdir -p build && cd build
+RUN ([ ${ROBOTOLOGY_USES_MATLAB} = "ON" ] &&\
+    cd ${IIT_SOURCES}/WB-Toolbox/build &&\
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_SOURCES}/robotology-superbuild/build/install \
+          .. &&\
+    make -j ${GCC_JOBS} install) \
+    || echo
 
 # Misc setup of the image
 # =======================
