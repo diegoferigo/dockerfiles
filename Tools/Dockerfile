@@ -1,4 +1,4 @@
-FROM ubuntu:zesty
+FROM ubuntu:artful
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Utilities
