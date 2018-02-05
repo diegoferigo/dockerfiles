@@ -2,26 +2,26 @@ version: '2'
 
 services:
   development:
-    image: "${DEVELOPMENT_IMAGE}"
+    image: ${DEVELOPMENT_IMAGE}
     container_name: development
     environment:
       # ROS/YARP Variables
       #- "ROS_HOSTNAME=development"
       #- "ROS_MASTER_URI=http://ros-master:${ROS_MASTER_PORT}"
-      - "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
+      - YARP_NAME_SPACE=${YARP_NAME_SPACE}
       # Runtime user variables
-      - "USER_UID=${USER_UID}"
-      - "USER_GID=${USER_GID}"
-      - "USERNAME=${USERNAME}"
+      - USER_UID=${USER_UID}
+      - USER_GID=${USER_GID}
+      - USERNAME=${USERNAME}
       # X11 Forwarding
-      - "XAUTHORITY=${XAUTH}"
-      - "DISPLAY"
+      - XAUTHORITY=${XAUTH}
+      - DISPLAY
       # Misc variables
-      - "COPY_ATOM_PACKAGES=1"
-      - "PROJECT_DIR=${PROJECT_DIR}"
+      - COPY_ATOM_PACKAGES=1
+      - PROJECT_DIR=${PROJECT_DIR}
       # Git variables
-      - "GIT_USER_NAME=${GIT_USER_NAME}"
-      - "GIT_USER_EMAIL=${GIT_USER_EMAIL}"
+      - GIT_USER_NAME=${GIT_USER_NAME}
+      - GIT_USER_EMAIL=${GIT_USER_EMAIL}
       # GPG commit signing variables
       # TODO: the only workaround I found to sign a commit is executing with:
       #         $ script -q -c "GPG_TTY=/dev/pts/0 git commit -m (...)
@@ -33,12 +33,10 @@ services:
       # - yarp-server
     volumes:
       # X11 Forwarding
-      - "${XSOCK}:${XSOCK}:rw"
-      - "${XAUTH}:${XAUTH}:rw"
+      - ${XSOCK}:${XSOCK}:rw
+      - ${XAUTH}:${XAUTH}:rw
       # Persistent folders
       - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
-      - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
-      - "/dev/shm:/dev/shm:rw"
       - ${HOST_ATOM_DOT_DIR}:/home/${USERNAME}/.atom:rw
       - ${HOST_ATOM_CONF_DIR}:/home/${USERNAME}/.config/Atom:rw
       - ${HOST_GITKRAKEN_DOT_DIR}:/home/${USERNAME}/.gitkraken:rw
@@ -47,12 +45,14 @@ services:
       - ${HOST_CCACHE_DIR}:/home/${USERNAME}/.ccache:rw
       - ${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw
       - ${HOST_MATLAB_DOT_DIR}:/home/${USERNAME}/.matlab:rw
+      - ${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw
       - ${HOST_BASH_HISTORY_FILE}:/home/${USERNAME}/.bash_history:rw
+      - /dev/shm:/dev/shm:rw
       # GPG commit signing
       # - "/dev/console:/dev/console:rw"
     devices:
       # HW Acceleration for intel cards
-      - "/dev/dri:/dev/dri"
+      - /dev/dri:/dev/dri
     mac_address: ${HOST_MATLAB_MAC}
     # -i
     stdin_open: true
