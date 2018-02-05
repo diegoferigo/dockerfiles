@@ -22,9 +22,9 @@ RUN apt-get update &&\
     pip install colour-valgrind
 
 # Updated clang ppa
+ENV CLANG_VER=6.0
 RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
-    apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-5.0 main" &&\
-    rm -rf /var/lib/apt/lists/*
+    apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-${CLANG_VER} main"
 
 # Build and development tools
 RUN apt-get update &&\
@@ -34,11 +34,11 @@ RUN apt-get update &&\
         cmake \
         cmake-curses-gui \
         ninja-build \
-        llvm-5.0 \
-        clang-5.0 \
-        lldb-5.0 \
-        libclang-5.0-dev \
-        clang-format-5.0 \
+        llvm-${CLANG_VER} \
+        clang-${CLANG_VER} \
+        lldb-${CLANG_VER} \
+        libclang-${CLANG_VER}-dev \
+        clang-format-${CLANG_VER} \
         gdb \
         valgrind \
         valkyrie \
