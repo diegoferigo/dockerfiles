@@ -1,30 +1,6 @@
 version: '2'
 
 services:
-  #
-  # MASTER CONTAINERS
-  #
-  ros-master:
-    image: "${ROS_MASTER_IMAGE}"
-    container_name: ros-master
-    ports:
-      - ${ROS_MASTER_PORT}:${ROS_MASTER_PORT}
-    command: roscore
-
-  #yarp-server:
-    #image: "${YARP_MASTER_IMAGE}"
-    #container_name: yarp-server
-    #environment:
-      #- "YARP_NAME_SPACE=${YARP_NAME_SPACE}"
-      #- "USERNAME=${USERNAME}"
-    #ports:
-      #- "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}"
-      #- "${YARP_MASTER_PORT}:${YARP_MASTER_PORT}/udp"
-    #command: sh -c 'yarp namespace ${YARP_NAME_SPACE} && yarpserver'
-
-  #
-  # DEVELOPMENT CONTAINERS
-  #
   development:
     image: "${DEVELOPMENT_IMAGE}"
     container_name: development
@@ -77,9 +53,6 @@ services:
     devices:
       # HW Acceleration for intel cards
       - "/dev/dri:/dev/dri"
-    ports:
-      - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}"
-      - "11000-11${YARP_NUM_PORTS}:10000-10${YARP_NUM_PORTS}/udp"
     mac_address: ${HOST_MATLAB_MAC}
     # -i
     stdin_open: true
@@ -92,30 +65,3 @@ services:
     security_opt:
       - seccomp:unconfined
     command: su -c 'atom -f' ${USERNAME}
-
-  gitkraken:
-    image: "${GITKRAKEN_IMAGE}"
-    container_name: gitkraken
-    environment:
-      - "USER_UID=${USER_UID}"
-      - "USER_GID=${USER_GID}"
-      - "USERNAME=${USERNAME}"
-      - "XAUTHORITY=${XAUTH}"
-      - "PROJECT_DIR=${PROJECT_DIR}"
-      - "DISPLAY"
-    volumes:
-      - "${XSOCK}:${XSOCK}:rw"
-      - "${XAUTH}:${XAUTH}:rw"
-      - "${HOST_GITKRAKEN_CONF_DIR}:/home/${USERNAME}/.gitkraken:rw"
-      - "${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw"
-      - "/dev/shm:/dev/shm:rw"
-      # Waiting gitkraken GPG signing support
-      # - "/home/${USERNAME}/.gnupg:/home/${USERNAME}/.gnupg:rw"
-    devices:
-      # HW Acceleration for intel cards
-      - "/dev/dri:/dev/dri"
-    # -i
-    stdin_open: true
-    # -t
-    tty: true
-    command: su -c "gitkraken" ${USERNAME}
