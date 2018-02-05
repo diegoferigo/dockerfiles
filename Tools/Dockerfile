@@ -113,6 +113,25 @@ RUN apt-get update &&\
     cmake --build . --target install &&\
     rm -r /tmp/rr
 
+# SWIG with Matlab / Octave support
+# ... waiting its upstream merge
+RUN apt-get update &&\
+    apt-get install -y \
+        autotools-dev \
+        automake \
+        bison \
+        libpcre3-dev &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /tmp/ &&\
+    git clone https://github.com/jaeandersson/swig.git &&\
+    cd swig &&\
+    git checkout matlab &&\
+    sh autogen.sh &&\
+    CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} ./configure &&\
+    make -j2 &&\
+    make install &&\
+    rm -r /tmp/swig
+
 # Setup an additional entrypoint script
 COPY setup.sh /usr/sbin/setup_tools.sh
 COPY entrypoint.sh /usr/sbin/entrypoint_tools.sh

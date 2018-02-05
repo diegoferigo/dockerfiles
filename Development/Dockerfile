@@ -70,18 +70,6 @@ RUN apt-get update &&\
 # Concurrent compilation jobs
 ENV GCC_JOBS=6
 
-# Install SWIG with Matlab / Octave support
-# ... waiting its upstream merge
-RUN git clone https://github.com/jaeandersson/swig.git &&\
-    cd swig &&\
-    git checkout matlab &&\
-    sh autogen.sh &&\
-    ./configure &&\
-    make -j${GCC_JOBS} &&\
-    make install &&\
-    cd - &&\
-    rm -r swig
-
 # Install YARP, iCub and friends from sources
 # ===========================================
 
