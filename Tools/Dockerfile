@@ -46,7 +46,6 @@ RUN apt-get update &&\
         doxygen \
         &&\
     rm -rf /var/lib/apt/lists/*
-ENV ROOT_PATH=$PATH
 
 # Setup HW Acceleration for Intel graphic cards
 RUN apt-get update &&\
