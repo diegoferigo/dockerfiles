@@ -64,10 +64,14 @@ if [ -e $(which nano) ] ; then
 fi
 
 # Load the ROS environment
-source "/opt/ros/$ROS_DISTRO/setup.bash"
+if [ -e /opt/ros/$ROS_DISTRO/setup.bash ] ; then
+    source /opt/ros/$ROS_DISTRO/setup.bash
+fi
 
 # Load the gazebo environment
-source /usr/share/gazebo/setup.sh
+if [ -e /usr/share/gazebo/setup.sh ] ; then
+    source /usr/share/gazebo/setup.sh
+fi
 
 # Enable ccache for the user created during runtime
 if [ -x $(which ccache) ] ; then
