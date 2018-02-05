@@ -55,7 +55,7 @@ RUN apt-get update &&\
         libgl1-mesa-dri &&\
     rm -rf /var/lib/apt/lists/*
 
-# Editor (Atom + plugins)
+# Atom Editor
 # In the future, check if libxss1 will become an atom package dependency
 RUN add-apt-repository -y ppa:webupd8team/atom &&\
     apt-get update &&\
@@ -64,25 +64,29 @@ RUN add-apt-repository -y ppa:webupd8team/atom &&\
         atom &&\
     rm -rf /var/lib/apt/lists/*
 
-# Packages with no ppa
-# TODO: check optional dependencies
-ENV GCC_JOBS=4
-RUN git clone --recursive https://github.com/Andersbakken/rtags.git &&\
-    cd rtags &&\
-    mkdir build &&\
-    cd build &&\
-    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. &&\
-    make -j ${GCC_JOBS} &&\
-    make install &&\
-    rm -r /rtags
-ARG GITKRAKEN_VER=3.3.1
-RUN wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
-    apt install /v${GITKRAKEN_VER}.deb &&\
-    rm /v${GITKRAKEN_VER}.deb
-
 # Atom packages
 COPY atom_packages.txt /usr/local/etc
 RUN apm install --packages-file /usr/local/etc/atom_packages.txt
+
+# Packages with no ppa
+# ====================
+
+# QtCreator
+ARG QTCREATOR_VERSION=4.5.0
+COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
+RUN cd /tmp &&\
+    wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-$QTCREATOR_VERSION.run &&\
+    chmod +x qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
+    ./qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run --platform minimal --script QtCreatorSetup.js &&\
+    rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js
+ENV PATH=$PATH:/opt/qtcreator/bin
+
+# Gitkraken
+ARG GITKRAKEN_VER=3.3.4
+RUN cd /tmp &&\
+    wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
+    apt install /tmp/v${GITKRAKEN_VER}.deb &&\
+    rm v${GITKRAKEN_VER}.deb
 
 # Setup an additional entrypoint script
 COPY setup.sh /usr/sbin/setup_tools.sh

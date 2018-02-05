@@ -66,6 +66,7 @@ services:
       - ${HOST_ATOM_DOT_DIR}:/home/${USERNAME}/.atom:rw
       - ${HOST_ATOM_CONF_DIR}:/home/${USERNAME}/.config/Atom:rw
       - ${HOST_GITKRAKEN_DOT_DIR}:/home/${USERNAME}/.gitkraken:rw
+      - ${HOST_QTCREATOR_CONF_DIR}:/home/${USERNAME}/.config/QtProject:rw
       - ${HOST_YARPLOCAL_DIR}:/home/${USERNAME}/.local/share/yarp:rw
       - ${HOST_CCACHE_DIR}:/home/${USERNAME}/.ccache:rw
       - ${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw

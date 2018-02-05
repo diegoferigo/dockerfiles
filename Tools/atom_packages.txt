@@ -1,14 +1,8 @@
-atom-gdb
-atomic-rtags
 atom-ros
 autocomplete-clang
 autocomplete-cmake
 autocomplete-xml
 auto-detect-indentation
-build
-build-cmake
-build-make
-busy
 busy-signal
 clang-format
 disable-mru-tabbing
