@@ -69,6 +69,8 @@ RUN apt-get update &&\
         python-yaml \
         python-numpy \
         python-setuptools \
+        # MISC
+        libasio-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
