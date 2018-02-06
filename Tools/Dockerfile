@@ -18,9 +18,15 @@ RUN apt-get update &&\
         python-pygments \
         colordiff \
         octave \
+        locales \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     pip install colour-valgrind
+
+# Setup locales
+RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && \
+    locale-gen &&\
+    update-locale LANG="en_US.UTF-8"
 
 # Updated clang ppa
 ENV CLANG_VER=6.0
