@@ -79,9 +79,12 @@ if [ -e /usr/share/gazebo/setup.sh ] ; then
     source /usr/share/gazebo/setup.sh
 fi
 
+# Docker configures the path of the root user. Set here the PATH also for the runtime user
+export PATH=${IIT_PATH:+${IIT_PATH}:}${PATH}:/opt/qtcreator/bin
+
 # Enable ccache for the user created during runtime
 if [ -x $(which ccache) ] ; then
-	export PATH=/usr/lib/ccache:${IIT_PATH:+${IIT_PATH}:}$PATH
+	export PATH=/usr/lib/ccache:${PATH}
 fi
 
 # If clang is installed, use it as default compiler
