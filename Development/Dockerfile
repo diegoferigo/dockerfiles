@@ -321,6 +321,8 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild/build &&\
     # Checkout codyco-modules devel branch
     cd ../robotology/codyco-modules &&\
     git checkout devel &&\
+    git config user.email "you@example.com" &&\
+    git config user.name "Your Name" &&\
     cd - &&\
     # Checkout yarp-matlab-bindings devel branch
     cd ../robotology/yarp-matlab-bindings &&\
@@ -332,7 +334,11 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild/build &&\
           -DYCM_EP_DEVEL_MODE_yarp-matlab-bindings:BOOL=ON \
           . &&\
     make -j ${GCC_JOBS} &&\
-    cd ../robotology/yarp-matlab-bindings &&\
+    # Remove the temporary git credentials
+    cd ../robotology/codyco-modules &&\
+    git config --unset user.email &&\
+    git config --unset user.name &&\
+    cd ../yarp-matlab-bindings &&\
     git config --unset user.email &&\
     git config --unset user.name
 
