@@ -256,6 +256,7 @@ RUN cd ${IIT_SOURCES} &&\
           .. &&\
     make -j ${GCC_JOBS} install
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/models/
+ENV GAZEBO_RESOURCE_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/worlds
 
 # ICUB-MODELS
 RUN cd ${IIT_SOURCES} &&\
