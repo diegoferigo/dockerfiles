@@ -144,6 +144,16 @@ RUN cd ${IIT_SOURCES}/ycm &&\
           .. &&\
     make -j ${GCC_JOBS} install
 
+# RTF
+RUN cd ${IIT_SOURCES}/robot-testing &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
+    mkdir -p build && cd build &&\
+    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          .. &&\
+    make -j ${GCC_JOBS} install
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${IIT_INSTALL}/lib/rtf
+    
 # YARP
 RUN \
     cd ${IIT_SOURCES}/yarp &&\
@@ -154,6 +164,7 @@ RUN \
           -DCREATE_GUIS=ON \
           -DCREATE_LIB_MATH=ON \
           -DSKIP_ACE=ON \
+          -DYARP_COMPILE_RTF_ADDONS=ON \
           .. &&\
     make -j ${GCC_JOBS} install &&\
     ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
@@ -184,16 +195,6 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
           .. &&\
     make -j ${GCC_JOBS} install
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
-
-# ROBOT-TESTING
-RUN cd ${IIT_SOURCES}/robot-testing &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir -p build && cd build &&\
-    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DENABLE_MIDDLEWARE_PLUGINS=ON \
-          .. &&\
-    make -j ${GCC_JOBS} install
 
 # GAZEBO-YARP-PLUGINS
 RUN ln -s /usr/lib/x86_64-linux-gnu/atlas/libblas.so /usr/lib/libblas.so &&\
