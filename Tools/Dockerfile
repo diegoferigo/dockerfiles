@@ -1,4 +1,6 @@
-FROM ubuntu:artful
+# Use artful as default tag. Build with e.g. --build-arg tag=xenial to override.
+ARG tag=artful
+FROM ubuntu:${tag}
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Utilities

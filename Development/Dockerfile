@@ -1,4 +1,6 @@
-FROM diegoferigo/tools
+# Use latest as default tag. Build with e.g. --build-arg tag=xenial to override.
+ARG tag=latest
+FROM diegoferigo/tools:${tag}
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Install ROS Desktop Full
