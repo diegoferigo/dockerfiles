@@ -88,9 +88,9 @@ if [ -x $(which ccache) ] ; then
 fi
 
 # If clang is installed, use it as default compiler
-if [[ -x $(which clang-6.0) && -x $(which clang++-6.0) ]] ; then
-	export CC="clang-6.0"
-	export CXX="clang++-6.0"
+if [[ -x $(which clang-${CLANG_VER}) && -x $(which clang++-${CLANG_VER}) ]] ; then
+	export CC="clang-${CLANG_VER}"
+	export CXX="clang++-${CLANG_VER}"
 fi
 
 # Enable matlab
@@ -302,10 +302,13 @@ function ccmiit() {
 # Function to switch gcc/clang compiler
 function compiler.set() {
 		case $1 in
-			gcc|1)   export CC="gcc"   && export CXX="g++"     ;;
-			clang|2) export CC="clang" && export CXX="clang++" ;;
-			clang6|3) export CC="clang-6.0" && export CXX="clang++-6.0" ;;
-			*) err "$1: only gcc, clang and clang6 are supported compilers" ; return 1 ;;
+			gcc|1)
+				msg "Setting gcc"
+				export CC="gcc"   && export CXX="g++" ;;
+			clang${CLANG_VER%.*}|2)
+			msg "Setting clang${CLANG_VER%.*}"
+				export CC="clang-${CLANG_VER}" && export CXX="clang++-${CLANG_VER}" ;;
+			*) err "$1: only gcc and clang are supported compilers" ; return 1 ;;
 		esac
 		return 0
 }
@@ -314,25 +317,21 @@ function compiler.get() {
 	if [[ "$CC" = "gcc" && "$CXX" = "g++" ]] ; then
 		msg "The active compiler is: gcc"
 		return 1
-	elif [[ "$CC" = "clang" && "$CXX" = "clang++" ]] ; then
-		msg "The active compiler is: clang"
+	elif [[ "$CC" = "clang-${CLANG_VER}" && "$CXX" = "clang++-${CLANG_VER}" ]] ; then
+		msg "The active compiler is: clang-${CLANG_VER}"
 		return 2
-	elif [[ "$CC" = "clang-6.0" && "$CXX" = "clang++-6.0" ]] ; then
-		msg "The active compiler is: clang-6.0"
-		return 3
 	else
-		err "The compiler environment variables aren't set"
-		return 2
+		err "The compiler environment variables aren't set."
+		return 3
 	fi
 }
 
 function compiler.switch() {
 	compiler.get
 	case $? in
-		1) msg "Switching to: clang"  ;  compiler.set 2 ;;
-		2) msg "Switching to: clang6" ;  compiler.set 3 ;;
-		3) msg "Switching to: gcc"    ;  compiler.set 1 ;;
-		*) err "Compiler not set. Setting gcc." ; compiler.set gcc ;;
+		1) compiler.set 2 ;;
+		2) compiler.set 1 ;;
+		*) compiler.set 2 ;;
 	esac
 }
 

@@ -29,7 +29,8 @@ RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && \
     update-locale LANG="en_US.UTF-8"
 
 # Updated clang ppa
-ENV CLANG_VER=6.0
+ARG clang_version=6.0
+ENV CLANG_VER=${clang_version}
 RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
     apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-${CLANG_VER} main"
 
