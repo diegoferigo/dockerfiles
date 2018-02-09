@@ -94,8 +94,8 @@ if [[ -x $(which clang-${CLANG_VER}) && -x $(which clang++-${CLANG_VER}) ]] ; th
 fi
 
 # Enable matlab
-if [ -x "/home/${USERNAME}/.MATLAB/bin/matlab" ] ; then
-	export PATH=${PATH}:/home/${USERNAME}/.MATLAB/bin
+if [ -x "/usr/local/MATLAB/bin/matlab" ] ; then
+	export PATH=${PATH}:/usr/local/MATLAB/bin
 	export MATLABPATH=${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/mex/:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WB-Toolbox/:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WB-Toolbox/images
 	# https://github.com/robotology/WB-Toolbox#problems-finding-libraries-and-libstdc
 	alias matlab="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab"

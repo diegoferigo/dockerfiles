@@ -20,15 +20,17 @@ chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-dev
 echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
 echo "source /home/$USERNAME/.bashrc-dev" >> /root/.bashrc
 
-# Mount the project directory
-if [[ -n ${PROJECT_DIR} && -d "/home/$USERNAME/$(basename ${PROJECT_DIR})" ]] ; then
-	chown -R $USERNAME:$USERNAME /home/$USERNAME/"$(basename ${PROJECT_DIR})"
-fi
+# Change the permission of all persistent resources mounted inside $HOME.
+# If you don't to get a chowned resource, mount it somewhere else.
+RESOURCES_MOUNTED_IN_HOME=($(mount | tr -s " " | cut -d " " -f 3 | grep /home/${USERNAME}))
+for resource in ${RESOURCES_MOUNTED_IN_HOME[@]} ; do
+    echo "Changing ownership of $resource"
+	chown -R ${USERNAME}:${USERNAME} $resource
+done
 
-# Use persistent bash_history file
-if [ -e "/home/$USERNAME/.bash_history" ] ; then
-	chown $USERNAME:$USERNAME /home/$USERNAME/.bash_history
-fi
+# Change the permissions of .local and .config
+[ -d /home/${USERNAME}/.local ] && chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.local
+[ -d /home/${USERNAME}/.config ] && chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
 # Configure git
 if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
@@ -53,10 +55,6 @@ if [ -d ${IIT_DIR} ] ; then
 	if [ ! -d /home/$USERNAME/$IIT_DIR ] ; then
 		su -c "ln -s ${IIT_DIR} /home/$USERNAME/$IIT_DIR" $USERNAME
 	fi
-fi
-
-if [ -d "/home/$USERNAME/.ccache" ] ; then
-	chown -R $USERNAME:$USERNAME /home/$USERNAME/.ccache
 fi
 
 # Configure YARP namespace

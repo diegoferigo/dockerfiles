@@ -43,7 +43,7 @@ services:
       - ${HOST_QTCREATOR_CONF_DIR}:/home/${USERNAME}/.config/QtProject:rw
       - ${HOST_YARPLOCAL_DIR}:/home/${USERNAME}/.local/share/yarp:rw
       - ${HOST_CCACHE_DIR}:/home/${USERNAME}/.ccache:rw
-      - ${HOST_MATLAB_DIR}:/home/${USERNAME}/.MATLAB:rw
+      - ${HOST_MATLAB_DIR}:/usr/local/MATLAB:rw
       - ${HOST_MATLAB_DOT_DIR}:/home/${USERNAME}/.matlab:rw
       - ${PROJECT_DIR}:/home/${USERNAME}/${PROJECT_BASENAME}:rw
       - ${HOST_BASH_HISTORY_FILE}:/home/${USERNAME}/.bash_history:rw
