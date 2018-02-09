@@ -197,9 +197,11 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
 # GAZEBO-YARP-PLUGINS
-RUN ln -s /usr/lib/x86_64-linux-gnu/atlas/libblas.so /usr/lib/libblas.so &&\
-    ln -s /usr/lib/x86_64-linux-gnu/atlas/liblapack.so /usr/lib/liblapack.so &&\
-    cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
+RUN ([ ! -e /usr/lib/libblas.so ] && ln -s /usr/lib/x86_64-linux-gnu/atlas/libblas.so /usr/lib/libblas.so) ||\
+    true
+RUN ([ ! -e /usr/lib/liblapack.so ] && ln -s /usr/lib/x86_64-linux-gnu/atlas/liblapack.so /usr/lib/liblapack.so) ||\
+    true
+RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
