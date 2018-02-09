@@ -97,7 +97,7 @@ ENV PATH=${IIT_PATH}:${PATH}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20180201"
+ARG IIT_DOCKER_SOURCES="20180208"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
@@ -111,7 +111,7 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/ros/urdf_parser_py &&\
     git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
-    git clone https://github.com/robotology/codyco-superbuild.git
+    git clone https://github.com/diegoferigo/robotology-superbuild.git
 
 # Env variables for configuring the sources
 # -----------------------------------------
@@ -299,9 +299,7 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
 
 # ROBOTOLOGY-SUPERBUILD
 # The bashrc-dev will source the variables exported by this repo
-RUN cd ${IIT_SOURCES} &&\
-    git clone https://github.com/diegoferigo/robotology-superbuild.git &&\
-    cd ${IIT_SOURCES}/robotology-superbuild &&\
+RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     git checkout add_LDLIBPATH_template &&\
     mkdir -p build && cd build &&\
     cmake \
@@ -355,7 +353,7 @@ RUN ([ ${ROBOTOLOGY_USES_MATLAB} = "ON" ] &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_SOURCES}/robotology-superbuild/build/install \
           .. &&\
     make -j ${GCC_JOBS} install) \
-    || echo
+    || true
 
 # Misc setup of the image
 # =======================
