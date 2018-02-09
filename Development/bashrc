@@ -233,17 +233,6 @@ function cm_template() {
 		else
 			err "File compile_commands.json not found"
 		fi
-		# If rmd is not running, execute it
-		if [ ! "$(ps ax | tr -s " " | awk '{$1=$1};1' | cut -d " " -f 5 | grep rdm)" = "rdm" ] ; then
-			msg2 "rdm is not running. Spawning a process"
-			rdm --daemon
-			sleep 1
-		fi
-		# Send to rdm the compilation database
-		if [ -e build/compile_commands.json ] ; then
-			msg2 "Forwarding the new compilation database to rdm"
-			rc -J >/dev/null
-		fi
 	else
 		err "CMakeLists.txt not found in this folder"
 		return 1
