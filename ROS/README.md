@@ -1,16 +1,24 @@
-Dockerfile for ROS Lunar `desktop-full`, built on top of the
-[`osrf/ros:lunar-desktop-full`](https://hub.docker.com/r/osrf/ros/) image.
+Dockerfile for ROS melodic `desktop-full`.
 
 Features:
 
 * X11 authentication for GUIs
-* Image size: 3.2GB
+* Image size: 2.9 GB
 * User created during runtime
+* Nvidia GPU and OpenGL support
 
 ## Build the image
 
+### Intel GPU
+
 ```
-docker build -t diegoferigo/ros .
+docker build --rm --pull -t diegoferigo/ros .
+```
+
+### Nvidia GPU
+
+```
+docker build --rm --pull --build-arg from=nvidia/opengl:1.0-glvnd-runtime-ubuntu18.04 -t diegoferigo/ros:nvidia .
 ```
 
 ## User configuration
@@ -22,14 +30,10 @@ This docker image allows the creation of a runtime user, whose default UID and
 GID is 1000. To override these values and to start the container, execute:
 
 ```
-USER_UID=1000
-USER_GID=1000
-USERNAME=foo
-
 docker run -i -t --rm \
-	-e USER_UID=$USER_UID \
-	-e USER_GID=$USER_GID \
-	-e USERNAME=$USERNAME \
+	-e USER_UID=$(id -u) \
+	-e USER_GID=$(id -g) \
+	-e USERNAME=$(whoami) \
 	--name ros \
 	diegoferigo/ros \
 	bash
@@ -61,6 +65,9 @@ docker run -i -t --rm \
 	-v $XAUTH:$XAUTH:rw \
 	-e XAUTHORITY=${XAUTH} \
 	-e DISPLAY \
+	-e USER_UID=$(id -u) \
+	-e USER_GID=$(id -g) \
+	-e USERNAME=$(whoami) \
 	--name ros \
 	diegoferigo/ros \
 	rqt
@@ -68,6 +75,11 @@ docker run -i -t --rm \
 
 If you need HW acceleration (only for Intel graphic cards), add also this device
 flag `--device=/dev/dri`.
+
+For what concerns Nvidia GPUs, you need to configure and install [`nvidia-docker`](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)). With such setup, you only have to:
+
+1. Add the additional option `--runtime nvidia` 
+2. Use the `diegoferigo/ros:nvidia` image
 
 ## Resources
 
